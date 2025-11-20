@@ -1,30 +1,35 @@
-import { UseQueryOptions } from "@tanstack/react-query";
-import { useFetch } from "../use-queries";
+import apiClient from "@/lib/api-client";
+import { IAPIResponse } from "@/types/global.type";
+import { Project } from "@/types/project.types";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-export interface ProjectProperties {
-  uid: string;
-  name: string;
-  description: string;
-  project_link: string;
-  tech_stack: string;
-  role: string;
-  github_link: string;
-  is_private_project: boolean;
-  image: string;
-  project_date: string;
-  created_at: string;
-  updated_at: string;
+/**
+ * Fetching projects Data from API.
+ */
+
+async function fetchProjects(
+  params?: Record<string, any>
+): Promise<IAPIResponse<Project>> {
+  const response = await apiClient.get<IAPIResponse<Project>>("/projects", {
+    params,
+  });
+  return response.data;
 }
 
 export function useProjects(
-  options?: Omit<UseQueryOptions<any[]>, "queryKey" | "queryFn">
+  params?: Record<string, any>,
+  options?: Omit<UseQueryOptions<IAPIResponse<Project>>, "queryKey" | "queryFn">
 ) {
-  return useFetch("/projects", options);
+  return useQuery<IAPIResponse<Project>>({
+    queryKey: ["projects"],
+    queryFn: () => fetchProjects(params),
+    ...options,
+  });
 }
 
-export function useProjectDetail(
-  project_uid: string,
-  options?: Omit<UseQueryOptions<any[]>, "queryKey" | "queryFn">
-) {
-  return useFetch(`/projects/${project_uid}`, options);
-}
+// export function useProjectDetail(
+//   project_uid: string,
+//   options?: Omit<UseQueryOptions<any[]>, "queryKey" | "queryFn">
+// ) {
+//   return useFetch(`/projects/${project_uid}`, options);
+// }

@@ -3,7 +3,8 @@
 import PostThumbnail from "@/components/post-thumbnail";
 import { ThumbnailSkeleton } from "@/components/thumbnail-skeleton";
 import { ErrorGrid } from "@/components/error-state";
-import { ProjectProperties, useProjects } from "@/hooks/queries/project.query";
+import { useProjects } from "@/hooks/queries/project.query";
+import { Project } from "@/types/project.types";
 
 export default function ProjectsPage() {
   const { isLoading, data, error, refetch } = useProjects();
@@ -35,7 +36,7 @@ export default function ProjectsPage() {
   return (
     <div className="px-5 lg:px-40">
       <div className="grid md:grid-cols-2 gap-3">
-        {data?.data.map((item: ProjectProperties) => {
+        {data?.data.map((item: Project) => {
           return (
             <div className="p-3" key={item.uid}>
               <PostThumbnail
