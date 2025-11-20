@@ -1,8 +1,7 @@
-import PostImage1 from "@/assets/images/post1.jpg";
+import moment from "moment";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
-import { FC, useState } from "react";
-import moment from "moment";
+import { FC } from "react";
 
 interface IPostThumbnail {
   title: string;
@@ -19,23 +18,16 @@ const PostThumbnail: FC<IPostThumbnail> = ({
   date,
   link = "/",
 }) => {
-  const [imageError, setImageError] = useState(false);
-  const imageToUse = !imageError ? image : PostImage1;
-
   return (
     <Link href={link}>
       <div className="rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
         <div className="relative w-full h-[300px] lg:h-[400px] bg-muted">
           <Image
-            src={imageToUse ?? PostImage1}
+            src={image}
             alt="Post Image"
             fill
             className="object-cover"
             priority={false}
-            onError={() => {
-              console.error("Image failed to load:", image);
-              setImageError(true);
-            }}
           />
           <div className="bg-slate/20 absolute top-0 w-full h-full flex flex-column items-end">
             <div className="p-5 w-full bg-background/30">
