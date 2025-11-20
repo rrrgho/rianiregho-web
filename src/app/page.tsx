@@ -1,65 +1,112 @@
-import Image from "next/image";
+"use client";
 
+import MainChar from "@/assets/images/main-char.jpg";
+import nextjsicon from "@/assets/images/nextjslogo.png";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useDynamicHeight } from "@/hooks/use-dynamic-height";
+import { GithubIcon, Link } from "lucide-react";
+import Image from "next/image";
 export default function Home() {
+  const isTall = useDynamicHeight();
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className={`relative ${isTall ? "h-screen" : "h-[700px]"}`}>
+      <div className="fixed w-[25px] h-[25px] bottom-5 right-5 z-95 rounded-full overflow-hidden">
+        <Tooltip>
+          <TooltipTrigger>
+            <Image src={nextjsicon} alt="nextjs" width={25} height={25} />
+          </TooltipTrigger>
+          <TooltipContent>
+            This website is built with Next JS & ShadCN
+          </TooltipContent>
+        </Tooltip>
+      </div>
+      <div className="flex flex-nowrap h-full">
+        <div className="hidden sm:block xl:hidden w-full h-full absolute top-0 left-0">
+          <div>
+            <Image src={MainChar} fill alt="Rian Iregho" />
+          </div>
+          <div className="absolute top-0 left-0 bg-slate-950/40 w-full h-full"></div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div
+          id="background"
+          className="absolute xl:relative flex xl:w-[55%] h-full 2xl:w-[63%] items-center px-5 lg:px-40"
+        >
+          <div className="">
+            <div className="flex mb-5 ms-[-5px] flex-nowrap gap-2 block sm:hidden">
+              <div className="w-[100px] h-[100px] rounded-full bg-primary overflow-hidden">
+                <Image
+                  src={MainChar}
+                  className="mt-[-20px]"
+                  alt="Rian Iregho"
+                />
+              </div>
+            </div>
+            <span className="text-2xl lg:text-3xl text-primary text-primary font-bold">
+              Software Engineer,
+            </span>{" "}
+            <br />
+            <div className="leading-none">
+              {/* <span className="text-[110px] font-extrabold">RIAN</span> <br /> */}
+              <span className="text-[60px] lg:text-[80px] 2xl:text-[110px] font-extrabold ms-[-5px]">
+                Rian Van Iregho
+              </span>
+            </div>
+            <div className="w-[400px] lg:w-[500px] mt-5">
+              <span className="text-foreground/70">
+                5+ years of experience building innovative, scalable, and
+                user-focused applications.
+              </span>
+            </div>
+            <div className="w-full mt-4">
+              <Button className="p-5 md:p-7">
+                <Link />
+                <span className="text-sm lg:text-lg cursor-pointer">
+                  Get in touch
+                </span>
+              </Button>
+            </div>
+            <div className="w-[400px] lg:w-[500px] mt-5 flex flex-nowrap">
+              <GithubIcon size={20} />
+              <span className="text-foreground/70 text-xs mt-1 ms-2">
+                Want to fork this website?
+                <a
+                  href="https://github.com/rrrgho"
+                  className="underline decoration-solid ms-1"
+                  target="_blank"
+                >
+                  Give some stars on my Github
+                </a>
+              </span>
+            </div>
+            <div className="w-[400px] absolute bottom-5 lg:w-[500px] mt-5 flex flex-nowrap">
+              <span className="text-foreground/70 text-xs mt-1 ms-2">
+                Powered by
+                <a
+                  href="https://nextjs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ms-1 underline decoration-solid"
+                >
+                  Next.JS
+                </a>
+              </span>
+            </div>
+          </div>
         </div>
-      </main>
+
+        <div className="flex xl:w-[45%] 2xl:w-[37%] relative bg-primary items-end ">
+          <div>
+            <Image src={MainChar} fill className="" alt="Rian Iregho" />
+          </div>
+          <div className="absolute top-0 left-0 bg-green-950/30 w-full h-full"></div>
+        </div>
+      </div>
     </div>
   );
 }
