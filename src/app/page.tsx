@@ -9,10 +9,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useDynamicHeight } from "@/hooks/use-dynamic-height";
+import { useProjectStore } from "@/store/useProjectStore";
 import { GithubIcon, Link } from "lucide-react";
 import Image from "next/image";
 export default function Home() {
   const isTall = useDynamicHeight();
+  const projectName = useProjectStore((state) => state.name);
   return (
     <div className={`relative ${isTall ? "h-screen" : "h-[700px]"}`}>
       <div className="fixed w-[25px] h-[25px] bottom-5 right-5 z-95 rounded-full overflow-hidden">
@@ -54,7 +56,7 @@ export default function Home() {
             <div className="leading-none">
               {/* <span className="text-[110px] font-extrabold">RIAN</span> <br /> */}
               <span className="text-[60px] lg:text-[80px] 2xl:text-[110px] font-extrabold ms-[-5px]">
-                Rian Van Iregho
+                Rian {projectName} Iregho
               </span>
             </div>
             <div className="w-[400px] lg:w-[500px] mt-5">
