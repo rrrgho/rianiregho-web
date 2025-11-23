@@ -1,14 +1,29 @@
+import { Project } from "@/types/project.types";
 import { create } from "zustand";
 
-type State = {
-  name: string;
-};
-
 type Action = {
-  updateProjectName: (name: State["name"]) => void;
+  updateProject: (data: Partial<Project>) => void;
+  resetProject: () => void;
 };
 
-export const useProjectStore = create<State & Action>((set) => ({
+const initialState: Project = {
   name: "",
-  updateProjectName: (name) => set(() => ({ name: name })),
+  description: "",
+  project_link: "",
+  tech_stack: "",
+  role: "",
+  github_link: "",
+  image: null,
+  project_date: "",
+};
+
+export const useProjectStore = create<Project & Action>((set) => ({
+  ...initialState,
+  updateProject: (data) =>
+    set((state) => ({
+      ...state,
+      ...data,
+    })),
+
+  resetProject: () => set(initialState),
 }));

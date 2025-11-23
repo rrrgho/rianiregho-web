@@ -18,29 +18,22 @@ import Link from "next/link";
 export default function AdminProjects() {
   const projects = useProjects({ page: 1, per_page: 1 });
   const { isLoading, data } = projects;
-  const testProjectGlobalState = useProjectStore((state) => state.name);
-  const updateProjectName = useProjectStore((state) => state.updateProjectName);
   return (
     <div className="w-full">
       <div className="container mx-auto py-10">
         <Card>
           <CardHeader>
-            <CardTitle>Projects {testProjectGlobalState}</CardTitle>
+            <CardTitle>Projects</CardTitle>
             <CardDescription>
               Showcasing projects to the Website
             </CardDescription>
             <CardAction>
-              <Button
-                variant="outline"
-                className="cursor-pointer"
-                onClick={() => {
-                  updateProjectName("IREGHO");
-                }}
-              >
-                <Plus />
-                Add Projects
-              </Button>
-              <Link href="/">PINDAH</Link>
+              <Link href="/administrator/projects/add">
+                <Button variant="outline" className="cursor-pointer">
+                  <Plus />
+                  Add Projects
+                </Button>
+              </Link>
             </CardAction>
           </CardHeader>
           <CardContent>

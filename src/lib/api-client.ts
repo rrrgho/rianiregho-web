@@ -49,7 +49,14 @@ apiClient.interceptors.response.use(
       // Handle unauthorized - redirect to login
       if (typeof window !== "undefined") {
         localStorage.removeItem("authToken");
-        window.location.href = "/login";
+        document.cookie = "authToken=; path=/; max-age=0";
+        // Redirect to admin login if on admin page, otherwise to home
+        const path = window.location.pathname;
+        if (path.startsWith("/administrator")) {
+          window.location.href = "/administrator/login";
+        } else {
+          window.location.href = "/";
+        }
       }
     }
 

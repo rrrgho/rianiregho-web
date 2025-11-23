@@ -1,0 +1,9 @@
+:root {
+  --ck-color-focus-border: hsl(263, 59%, 52%);
+  --ck-color-toolbar-background: hsl(210, 33%, 99%);
+  --ck-color-button-on-background: hsl(210, 8%, 95%);
+  --ck-color-button-on-color: hsl(263, 59%, 52%);
+  --ck-font-size-base: 16px;
+  --ck-spacing-unit: 1em;
+  --ck-border-radius: 16px;
+}
