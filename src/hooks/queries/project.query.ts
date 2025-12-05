@@ -55,10 +55,3 @@ export function useProjects(
     ...options,
   });
 }
-
-// export function useProjectDetail(
-//   project_uid: string,
-//   options?: Omit<UseQueryOptions<any[]>, "queryKey" | "queryFn">
-// ) {
-//   return useFetch(`/projects/${project_uid}`, options);
-// }

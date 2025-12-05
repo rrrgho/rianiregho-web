@@ -1,4 +1,26 @@
+"use client";
+import { logout } from "@/lib/actions/auth";
+import {
+  Calendar,
+  EllipsisVertical,
+  Home,
+  Inbox,
+  LogOut,
+  Search,
+  Settings,
+  Settings2,
+} from "lucide-react";
+import { useSession } from "next-auth/react";
 import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -11,7 +33,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "./ui/sidebar";
-import { Calendar, Home, Inbox, LogOut, Search, Settings } from "lucide-react";
+import { useLogout } from "@/hooks/use-logout";
 
 interface IAdminAppSidebar {
   children: React.ReactNode;
@@ -20,12 +42,12 @@ interface IAdminAppSidebar {
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/administrator",
     icon: Home,
   },
   {
     title: "Projects",
-    url: "/projects",
+    url: "/administrator/projects",
     icon: Inbox,
   },
   {
@@ -46,6 +68,8 @@ const items = [
 ];
 
 const AdminAppSidebar = ({ children }: IAdminAppSidebar) => {
+  const session = useSession();
+  const { logout } = useLogout();
   return (
     <SidebarProvider>
       <Sidebar>
@@ -67,18 +91,55 @@ const AdminAppSidebar = ({ children }: IAdminAppSidebar) => {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-          <div className="absolute w-full bottom-0">
+          <div className="absolute w-full bottom-2">
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <a href="#">
-                        <LogOut />
-                        <span>Logout</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <div className="flex flex-nowrap justify-around gap-3">
+                    <div className="flex justify-center">
+                      <Avatar>
+                        <AvatarImage
+                          src="https://github.com/shadcn.png"
+                          alt="@shadcn"
+                        />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div className="flex w-full items-center">
+                      {/* <UserInfo /> */}
+                      <span>
+                        {session.data?.user?.name ??
+                          "Session expired, please relogin !"}
+                      </span>
+                    </div>
+                    <div className="flex justify-center items-center">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="cursor-pointer">
+                          <EllipsisVertical size={17} />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuRadioGroup>
+                            <DropdownMenuItem disabled>
+                              Settings
+                              <DropdownMenuShortcut>
+                                <Settings2 />
+                              </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="cursor-pointer"
+                              onClick={logout}
+                            >
+                              Logout
+                              <DropdownMenuShortcut>
+                                <LogOut />
+                              </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            {/* <Logout /> */}
+                          </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>

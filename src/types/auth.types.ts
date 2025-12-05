@@ -8,7 +8,7 @@ export interface User {
   updated_at: string;
 }
 
-export interface LoginResponse {
+export interface ApiTokenRequestResponse {
   message: string;
   token: string;
   user: User;

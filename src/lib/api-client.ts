@@ -21,9 +21,14 @@ const apiClient: AxiosInstance = axios.create({
  */
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Add auth token if available
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+    // Add auth token if available (from sessionStorage or localStorage)
+    let token: string | null = null;
+
+    if (typeof window !== "undefined") {
+      // First try sessionStorage (set during OAuth validation)
+      token = sessionStorage.getItem("bearerToken");
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -49,6 +54,7 @@ apiClient.interceptors.response.use(
       // Handle unauthorized - redirect to login
       if (typeof window !== "undefined") {
         localStorage.removeItem("authToken");
+        sessionStorage.removeItem("bearerToken");
         document.cookie = "authToken=; path=/; max-age=0";
         // Redirect to admin login if on admin page, otherwise to home
         const path = window.location.pathname;

@@ -6,7 +6,7 @@ import { FC } from "react";
 interface IPostThumbnail {
   title: string;
   description: string;
-  image: StaticImageData | string;
+  image: StaticImageData | string | any;
   date: string;
   link?: string;
 }

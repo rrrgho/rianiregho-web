@@ -1,6 +1,4 @@
 "use client";
-
-import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,8 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { projectColumns, useProjects } from "@/hooks/queries/project.query";
-import { useProjectStore } from "@/store/useProjectStore";
+import { useProjects } from "@/hooks/queries/project.query";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
@@ -37,9 +34,9 @@ export default function AdminProjects() {
             </CardAction>
           </CardHeader>
           <CardContent>
-            {!isLoading && (
+            {/* {!isLoading && (
               <DataTable columns={projectColumns} data={data?.data} />
-            )}
+            )} */}
           </CardContent>
         </Card>
       </div>

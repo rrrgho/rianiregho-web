@@ -105,6 +105,8 @@ export function Navbar() {
     }
   };
 
+  useEffect(() => {}, [isAdminPage]);
+
   if (isAdminPage) return;
 
   if (mounted) {
