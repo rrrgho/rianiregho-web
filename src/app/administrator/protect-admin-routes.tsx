@@ -13,7 +13,6 @@ const ProtectAdminRoutes = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      console.log("awwww");
       const bearerToken = sessionStorage.getItem("bearerToken");
 
       if (!bearerToken) {

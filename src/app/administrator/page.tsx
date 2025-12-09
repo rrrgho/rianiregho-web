@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 
 export default function AdministratorHomePage() {
   const session = useSession();
-  console.log("SESSION: ", session);
   return (
     <div>
       <h1>Home</h1>

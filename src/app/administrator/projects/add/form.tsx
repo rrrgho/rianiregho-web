@@ -12,15 +12,16 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Toaster } from "@/components/ui/sonner";
+import { useMutateProject } from "@/hooks/queries/project.query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
-  name: z
-    .string()
-    .min(10, "Project name must be at least 10 characters")
-    .max(15, "Project name must be at most 15 characters."),
+  name: z.string({ message: "Cannot be empty" }),
   description: z.string({ message: "Cannot be empty" }),
   project_date: z.date({ message: "Cannot be emtpy" }),
   project_link: z
@@ -38,11 +39,12 @@ const formSchema = z.object({
   role: z.string({ message: "Cannot be emtpy" }),
   image: z
     .instanceof(File)
-    .refine((file) => file.size <= 2 * 1024 * 1024, "Max size 2MB")
+    .refine((file) => file.size <= 1.5 * 1024 * 1024, "Max size 1.5MB")
     .optional(),
 });
 
 const ProjectForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,9 +52,20 @@ const ProjectForm = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("DATA: ", data);
-    // showToast("You are submitting this", data.project_date);
+  const projectMutation = useMutateProject();
+  const { mutate, isPending } = projectMutation;
+
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      await mutate(data, {
+        onSuccess: () => {
+          toast.success("Project created successfully!");
+          router.push("/administrator/projects");
+        },
+      });
+    } catch (error) {
+      console.error("Failed to submit project:", error);
+    }
   }
 
   return (
@@ -265,8 +278,8 @@ const ProjectForm = () => {
           <Button type="button" variant="outline" onClick={() => form.reset()}>
             Reset
           </Button>
-          <Button type="submit" form="project-form">
-            Submit
+          <Button type="submit" form="project-form" disabled={isPending}>
+            {isPending ? "Submitting..." : "Submit"}
           </Button>
         </Field>
       </CardFooter>

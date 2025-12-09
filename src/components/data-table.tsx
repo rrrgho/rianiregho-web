@@ -52,7 +52,6 @@ export function DataTable<TData, TValue>({
           ...prev,
           page: params.page + 1,
         }));
-        console.log(params.page);
       }
     } else {
       if (params.page !== 1) {

@@ -4,6 +4,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import { toast } from "sonner";
 
 /**
  * Create axios instance with base configuration
@@ -49,6 +50,10 @@ apiClient.interceptors.response.use(
   (error: unknown) => {
     const axiosError = error as AxiosError;
 
+    if (axiosError) {
+      console.error("API Error:", axiosError);
+    }
+
     // Handle specific error cases
     if (axiosError.response?.status === 401) {
       // Handle unauthorized - redirect to login
@@ -59,7 +64,7 @@ apiClient.interceptors.response.use(
         // Redirect to admin login if on admin page, otherwise to home
         const path = window.location.pathname;
         if (path.startsWith("/administrator")) {
-          window.location.href = "/administrator/login";
+          window.location.href = "/login";
         } else {
           window.location.href = "/";
         }
@@ -67,18 +72,24 @@ apiClient.interceptors.response.use(
     }
 
     if (axiosError.response?.status === 403) {
-      console.error("Access forbidden");
+      toast("Forbiden Access !", {
+        description: "Please logout and relogin to continue.",
+      });
+    } else if (axiosError.response?.status === 404) {
+      toast("API Not Found !", {
+        description: "Please contact developer for more information.",
+      });
+    } else if (axiosError.response && axiosError.response.status >= 500) {
+      toast("Something went wrong !", {
+        description: "Please contact developer for more information.",
+      });
+    } else {
+      toast("Something went wrong !", {
+        description: "Please contact developer for more information.",
+      });
     }
 
-    if (axiosError.response?.status === 404) {
-      console.error("Resource not found");
-    }
-
-    if (axiosError.response && axiosError.response.status >= 500) {
-      console.error("Server error");
-    }
-
-    return Promise.reject(error);
+    return Promise.reject(axiosError);
   }
 );
 

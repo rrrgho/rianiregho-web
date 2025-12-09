@@ -25,7 +25,6 @@ export default function ValidateToken() {
       }, 500);
     },
     onError: (err) => {
-      console.log("ERR: ", err);
       // Redirect to login on error
       setTimeout(() => {
         router.push("/login");
