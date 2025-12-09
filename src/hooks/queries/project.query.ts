@@ -50,7 +50,7 @@ export function useProjects(
   options?: Omit<UseQueryOptions<IAPIResponse<Project>>, "queryKey" | "queryFn">
 ) {
   return useQuery<IAPIResponse<Project>>({
-    queryKey: ["projects"],
+    queryKey: ["projects", params],
     queryFn: () => fetchProjects(params),
     ...options,
   });

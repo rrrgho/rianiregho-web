@@ -4,3 +4,12 @@ export interface IAPIResponse<T> {
   last_page: number;
   total: number;
 }
+
+export interface IPaginationParams {
+  page: number;
+  per_page?: number;
+}
+
+export interface IHandlePagination {
+  type: "PREVIOUS" | "NEXT";
+}

@@ -8,13 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useProjects } from "@/hooks/queries/project.query";
+import { projectColumns } from "@/hooks/queries/project.query";
+import AppDatatable from "@/lib/Datatable/datatable";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminProjects() {
-  const projects = useProjects({ page: 1, per_page: 1 });
-  const { isLoading, data } = projects;
   return (
     <div className="w-full">
       <div className="container mx-auto py-10">
@@ -34,9 +33,7 @@ export default function AdminProjects() {
             </CardAction>
           </CardHeader>
           <CardContent>
-            {/* {!isLoading && (
-              <DataTable columns={projectColumns} data={data?.data} />
-            )} */}
+            <AppDatatable endpoint="/projects" columns={projectColumns} />
           </CardContent>
         </Card>
       </div>

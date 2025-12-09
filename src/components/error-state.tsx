@@ -28,7 +28,7 @@ export function ErrorState({
   children,
 }: ErrorStateProps) {
   return (
-    <div className="w-full min-h-screen px-5 lg:px-40 py-20 flex items-center justify-center">
+    <div className="w-full  px-5 lg:px-40 py-20 flex items-center justify-center">
       <div className="max-w-md w-full text-center">
         {/* Error Icon */}
         <div className="flex justify-center mb-6">
@@ -65,20 +65,13 @@ export function ErrorState({
             </button>
           )}
 
-          {backLink ? (
+          {backLink && (
             <Link
               href={backLink}
               className="inline-flex items-center justify-center gap-2 bg-secondary text-secondary-foreground px-6 py-3 rounded-lg hover:opacity-90 transition-opacity font-semibold"
             >
               {backLinkText}
             </Link>
-          ) : (
-            <button
-              onClick={() => window.history.back()}
-              className="inline-flex items-center justify-center gap-2 bg-secondary text-secondary-foreground px-6 py-3 rounded-lg hover:opacity-90 transition-opacity font-semibold"
-            >
-              {backLinkText}
-            </button>
           )}
         </div>
       </div>
