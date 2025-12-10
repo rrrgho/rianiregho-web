@@ -10,9 +10,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Project } from "@/types/project.types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Controller } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
 export const formSchema = z.object({
@@ -44,23 +46,55 @@ export const formSchema = z.object({
 
 interface ProjectFormProps {
   initialData?: any;
-  onSuccess?: () => void;
-  form: any;
   onSubmit: (data: z.infer<typeof formSchema>) => void;
   isPending?: boolean;
   isDetail?: boolean;
-  isEdit?: boolean;
+  data?: Project;
 }
 
 const ProjectForm = ({
-  form,
   onSubmit,
   isPending,
   isDetail,
+  data,
 }: ProjectFormProps) => {
   const [onEdit, setOnEdit] = useState<boolean>(false);
   const [showButtonSubmit, setShowButtonSubmit] = useState(true);
-  const { handleSubmit } = form;
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
+
+  const populateForm = useCallback(
+    (project: Project) => {
+      const storageUrl = process.env.NEXT_PUBLIC_STORAGE_URL || "";
+
+      form.setValue("name", project.name || "");
+      form.setValue("description", project.description || "");
+      form.setValue("tech_stack", project.tech_stack || "");
+      form.setValue("role", project.role || "");
+      form.setValue("github_link", project.github_link || "");
+      form.setValue("project_link", project.project_link || "");
+      form.setValue("image", storageUrl + project.image_path || "");
+
+      if (project.project_date) {
+        form.setValue("project_date", new Date(project.project_date));
+      }
+    },
+    [form]
+  );
+
+  useEffect(() => {
+    if (data) {
+      populateForm(data);
+    }
+  }, [data, populateForm]);
+
+  const submit = (data: z.infer<typeof formSchema>) => {
+    onSubmit(data);
+  };
 
   useEffect(() => {
     if (isDetail) {
@@ -88,7 +122,7 @@ const ProjectForm = ({
       )}
       <div>
         <FieldGroup>
-          <form id="project-form" onSubmit={handleSubmit(onSubmit)}>
+          <form id="project-form" onSubmit={form.handleSubmit(submit)}>
             <div className="grid grid-cols-2 mt-5">
               <div className="grid w-full gap-6">
                 {/* Project Name */}
