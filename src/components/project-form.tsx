@@ -2,7 +2,7 @@ import { DatePicker } from "@/components/date-picker";
 import InputImage from "@/components/input-image";
 import QuillEditor from "@/components/quill-editor";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardFooter } from "@/components/ui/card";
+import { CardFooter } from "@/components/ui/card";
 import {
   Field,
   FieldError,
@@ -10,8 +10,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Edit, Edit2 } from "lucide-react";
-import { useState } from "react";
+import { Edit } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 import * as z from "zod";
 
@@ -59,21 +59,34 @@ const ProjectForm = ({
   isDetail,
 }: ProjectFormProps) => {
   const [onEdit, setOnEdit] = useState<boolean>(false);
+  const [showButtonSubmit, setShowButtonSubmit] = useState(true);
   const { handleSubmit } = form;
+
+  useEffect(() => {
+    if (isDetail) {
+      if (onEdit) {
+        setShowButtonSubmit(true);
+      } else {
+        setShowButtonSubmit(false);
+      }
+    }
+  }, [onEdit]);
   return (
     <div>
-      <div className="w-full flex justify-end items-end px-5">
-        <Button
-          onClick={() => {
-            setOnEdit(true);
-          }}
-          disabled={onEdit}
-          className="bg-transparent cursor-pointer hover:bg-transparent group"
-        >
-          <Edit className="edit-icon size-6 group-hover:opacity-50 transition-opacity" />
-        </Button>
-      </div>
-      <CardContent>
+      {isDetail && (
+        <div className="w-full flex justify-end items-end px-5">
+          <Button
+            onClick={() => {
+              setOnEdit(true);
+            }}
+            disabled={onEdit}
+            className="bg-transparent cursor-pointer hover:bg-transparent group"
+          >
+            <Edit className="edit-icon size-6 group-hover:opacity-50 transition-opacity" />
+          </Button>
+        </div>
+      )}
+      <div>
         <FieldGroup>
           <form id="project-form" onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 mt-5">
@@ -288,9 +301,9 @@ const ProjectForm = ({
             </div>
           </form>
         </FieldGroup>
-      </CardContent>
+      </div>
       <CardFooter className="mt-10">
-        {onEdit && (
+        {showButtonSubmit && (
           <Field orientation="horizontal" className="flex justify-end">
             <Button
               className="cursor-pointer"

@@ -1,12 +1,15 @@
 "use client";
 import { ErrorState } from "@/components/error-state";
 import ProjectForm, { formSchema } from "@/components/project-form";
+import ProjectGalleryForm from "@/components/project-gallery-form";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   useProjectDetail,
   useUpdateMutationProject,
@@ -109,12 +112,26 @@ const AdminProjectsPage = () => {
           <CardDescription>
             Showing what you have made for this project!
           </CardDescription>
-          <ProjectForm
-            isDetail
-            form={form}
-            onSubmit={onSubmitUpdate}
-            isPending={isPending}
-          />
+          <CardContent>
+            <ProjectForm
+              isDetail
+              form={form}
+              onSubmit={onSubmitUpdate}
+              isPending={isPending}
+            />
+
+            <div className="grid grid-cols-3 flex justify-center items-center mt-10">
+              <Separator />
+              <div className="text-center">
+                <CardTitle>Project Gallery</CardTitle>
+              </div>
+              <Separator />
+            </div>
+
+            <div className="mt-10">
+              <ProjectGalleryForm projectId={id} />
+            </div>
+          </CardContent>
         </CardHeader>
       </Card>
     </div>
