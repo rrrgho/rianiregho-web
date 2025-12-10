@@ -10,10 +10,18 @@ import {
 } from "@/components/ui/card";
 import { projectColumns } from "@/hooks/queries/project.query";
 import AppDatatable from "@/lib/Datatable/datatable";
+import { Project } from "@/types/project.types";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function AdminProjects() {
+  const router = useRouter();
+
+  const handleRowClick = (project: Project) => {
+    router.push(`/administrator/projects/${project.id}`);
+  };
+
   return (
     <div className="w-full">
       <div className="container mx-auto py-10">
@@ -33,7 +41,11 @@ export default function AdminProjects() {
             </CardAction>
           </CardHeader>
           <CardContent>
-            <AppDatatable endpoint="/projects" columns={projectColumns} />
+            <AppDatatable
+              endpoint="/projects"
+              columns={projectColumns}
+              onRowClick={handleRowClick}
+            />
           </CardContent>
         </Card>
       </div>

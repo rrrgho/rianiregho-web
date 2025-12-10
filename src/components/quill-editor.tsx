@@ -7,9 +7,14 @@ import "quill/dist/quill.snow.css";
 interface QuillEditorProps {
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export default function QuillEditor({ value, onChange }: QuillEditorProps) {
+export default function QuillEditor({
+  value,
+  onChange,
+  disabled,
+}: QuillEditorProps) {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const quillRef = useRef<Quill | null>(null);
 
@@ -34,6 +39,13 @@ export default function QuillEditor({ value, onChange }: QuillEditorProps) {
     }
   }, [onChange]);
 
+  // Handle disabled state
+  useEffect(() => {
+    if (quillRef.current) {
+      quillRef.current.enable(!disabled);
+    }
+  }, [disabled]);
+
   // Update value externally (e.g., form reset)
   useEffect(() => {
     if (quillRef.current && value !== quillRef.current.root.innerHTML) {
@@ -42,7 +54,11 @@ export default function QuillEditor({ value, onChange }: QuillEditorProps) {
   }, [value]);
 
   return (
-    <div className="w-full border border-input rounded-md bg-background">
+    <div
+      className={`w-full border border-input rounded-md bg-background ${
+        disabled ? "opacity-50 pointer-events-none" : ""
+      }`}
+    >
       <div ref={editorRef} />
     </div>
   );

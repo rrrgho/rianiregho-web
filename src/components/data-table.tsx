@@ -28,6 +28,7 @@ interface DataTableProps<TData, TValue> {
   total: number | undefined;
   last_page: number | undefined;
   setParams: Dispatch<SetStateAction<IPaginationParams>>;
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -38,6 +39,7 @@ export function DataTable<TData, TValue>({
   total,
   last_page,
   setParams,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -101,6 +103,10 @@ export function DataTable<TData, TValue>({
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
+                      onClick={() => onRowClick?.(row.original)}
+                      className={
+                        onRowClick ? "cursor-pointer hover:bg-accent/10" : ""
+                      }
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>

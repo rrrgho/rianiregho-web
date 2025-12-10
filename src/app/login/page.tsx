@@ -62,8 +62,8 @@ export default function LoginPage() {
                   onClick={() => login()}
                   className="w-full cursor-pointer bg-background"
                 >
-                  <Github />
-                  <span>Github</span>
+                  <Github className="text-primary" />
+                  <span className="text-primary">Github</span>
                 </Button>
               </div>
             </CardContent>

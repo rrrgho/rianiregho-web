@@ -11,6 +11,7 @@ import { DataTable } from "@/components/data-table";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   endpoint: string;
+  onRowClick?: (row: TData) => void;
 }
 
 async function fetchData(
@@ -36,6 +37,7 @@ function useQueryData(
 function AppDatatable<TData, TValue>({
   columns,
   endpoint,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [params, setParams] = useState<IPaginationParams>({
     page: 1,
@@ -56,6 +58,7 @@ function AppDatatable<TData, TValue>({
           data={data?.data}
           total={data?.total}
           last_page={data?.last_page}
+          onRowClick={onRowClick}
         />
       )}
     </>

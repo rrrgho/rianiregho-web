@@ -5,8 +5,8 @@ import { Project } from "@/types/project.types";
 import {
   useMutation,
   useQuery,
-  UseQueryOptions,
   useQueryClient,
+  UseQueryOptions,
 } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
@@ -64,15 +64,36 @@ export function useProjects(
   options?: Omit<UseQueryOptions<IAPIResponse<Project>>, "queryKey" | "queryFn">
 ) {
   return useQuery<IAPIResponse<Project>>({
-    queryKey: ["projects", params],
+    queryKey: ["/projects", params],
     queryFn: () => fetchProjects(params),
     ...options,
   });
 }
 
 /**
+ * Fetch Single Project
+ * This function fetches a single project by its ID from the API.
+ */
+
+async function fetchProjectById(id: string): Promise<IAPIResponse<Project>> {
+  const response = await apiClient.get(endpoint + `/${id}`);
+  return response.data;
+}
+
+export function useProjectDetail(
+  id: string,
+  options?: Omit<UseQueryOptions<IAPIResponse<Project>>, "queryKey" | "queryFN">
+) {
+  return useQuery<IAPIResponse<Project>>({
+    queryKey: ["/projects", id],
+    queryFn: () => fetchProjectById(id),
+    ...options,
+  });
+}
+
+/**
  * Mutation Projects
- * These functions below belongs to mutation operations like create, update, delete.
+ * These functions below belongs to mutation operations like create.
  */
 
 async function mutateProject(data: Partial<Project>) {
@@ -129,6 +150,73 @@ export function useMutateProject() {
     onSuccess: () => {
       // Invalidate both query key formats used in the app
       queryClient.invalidateQueries({ queryKey: ["/projects"], exact: false });
+    },
+  });
+}
+
+/**
+ * Mutation Update Projects
+ * These functions below belongs to mutation operations update.
+ */
+
+async function updateProject(data: Partial<Project>, id: string) {
+  const endpointUpdate = `${endpoint}/${id}`;
+  const formattedData = data;
+  if (formattedData.project_date) {
+    formattedData.project_date = formatDateToAPI(
+      formattedData.project_date as any
+    ) as any;
+  }
+
+  // Check if image exists and create FormData
+  if (formattedData.image instanceof File) {
+    const formData = new FormData();
+
+    // Append all fields except image to formData
+    Object.keys(formattedData).forEach((key) => {
+      if (key !== "image") {
+        const value = formattedData[key as keyof typeof formattedData];
+        if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
+      }
+    });
+
+    // Append the image file
+    formData.append("image", formattedData.image);
+    console.log("FORM DATA: ", formData.get("image"));
+    const response = await apiClient.post<IAPIResponse<Project>>(
+      endpointUpdate,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  }
+
+  // If the image isn't updated, we take out object image from being sent to API.
+  const { image, ...dataWithoutImage } = formattedData;
+
+  // If no image, send as regular JSON
+  const response = await apiClient.post<IAPIResponse<Project>>(
+    endpointUpdate,
+    dataWithoutImage
+  );
+  return response.data;
+}
+
+export function useUpdateMutationProject(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Partial<Project>) => updateProject(data, id),
+    onSuccess: () => {
+      // Invalidate all projects queries
+      queryClient.invalidateQueries({ queryKey: ["/projects"], exact: false });
+      // Invalidate the specific project detail query
+      queryClient.invalidateQueries({ queryKey: ["/projects", id] });
     },
   });
 }

@@ -4,11 +4,11 @@ import { FC } from "react";
 import Image from "next/image";
 
 interface IPhotoshow {
-  images: string;
+  image: string;
   onClose: () => void;
 }
 
-const PhotoShow: FC<IPhotoshow> = ({ images, onClose }) => {
+const PhotoShow: FC<IPhotoshow> = ({ image, onClose }) => {
   return (
     <div className="bg-zinc-950/80 fixed top-0 right-0 w-full h-screen z-40">
       <div className="w-full absolute top-0 right-0 flex justify-end items-center">
@@ -19,7 +19,12 @@ const PhotoShow: FC<IPhotoshow> = ({ images, onClose }) => {
 
       <div className="px-5 xl:px-40 h-screen flex justify-center items-center">
         <div className="w-full h-[300px] md:h-[600px] xl:h-[700px] relative">
-          <Image src={images} alt="Photoshow" fill className="rounded-lg" />
+          <Image
+            src={process.env.NEXT_PUBLIC_STORAGE_URL + image}
+            alt="Photoshow"
+            fill
+            className="rounded-lg"
+          />
         </div>
       </div>
     </div>

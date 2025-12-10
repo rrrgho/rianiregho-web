@@ -1,13 +1,25 @@
 import { ControllerRenderProps } from "react-hook-form";
 
-const InputImage = ({ field }: { field: ControllerRenderProps<any> }) => {
+const InputImage = ({
+  field,
+  disabled,
+}: {
+  field: ControllerRenderProps<any>;
+  disabled?: boolean;
+}) => {
   const file = field.value;
   const previewUrl =
-    file && typeof file !== "string" ? URL.createObjectURL(file) : null;
+    file && typeof file !== "string" ? URL.createObjectURL(file) : file;
   return (
     <div
-      className="relative w-full h-[400px] border border-dashed rounded-md flex items-center justify-center bg-muted cursor-pointer hover:bg-muted/70 transition"
-      onClick={() => document.getElementById("image_input")?.click()}
+      className={`relative w-full h-[400px] border border-dashed rounded-md flex items-center justify-center bg-muted transition ${
+        disabled
+          ? "opacity-50 pointer-events-none cursor-not-allowed"
+          : "cursor-pointer hover:bg-muted/70"
+      }`}
+      onClick={() =>
+        !disabled && document.getElementById("image_input")?.click()
+      }
     >
       {/* If Image exists → Preview */}
       {previewUrl ? (
@@ -21,11 +33,18 @@ const InputImage = ({ field }: { field: ControllerRenderProps<any> }) => {
           {/* Delete Button */}
           <button
             type="button"
+            disabled={disabled}
             onClick={(e) => {
               e.stopPropagation(); // prevent re-triggering input click
-              field.onChange(null);
+              if (!disabled) {
+                field.onChange(null);
+              }
             }}
-            className="absolute top-1 right-1 bg-black/60 hover:bg-black text-white rounded-full w-7 h-7 flex items-center justify-center text-xs"
+            className={`absolute top-1 right-1 rounded-full w-7 h-7 flex items-center justify-center text-xs ${
+              disabled
+                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                : "bg-black/60 hover:bg-black text-white"
+            }`}
           >
             ✕
           </button>
@@ -41,6 +60,7 @@ const InputImage = ({ field }: { field: ControllerRenderProps<any> }) => {
         id="image_input"
         type="file"
         accept="image/*"
+        disabled={disabled}
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];

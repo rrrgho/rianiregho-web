@@ -38,12 +38,12 @@ export default function ProjectsPage() {
       <div className="grid md:grid-cols-2 gap-3">
         {data?.data.map((item: Project) => {
           return (
-            <div className="p-3" key={item.uid}>
+            <div className="p-3" key={item.id}>
               <PostThumbnail
-                link={`/projects/${item.uid}`}
+                link={`/projects/${item.id}`}
                 title={item.name}
                 description={""}
-                image={item.image}
+                image={item.image_path}
                 date={item.project_date}
               />
             </div>

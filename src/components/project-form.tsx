@@ -1,5 +1,3 @@
-"use client";
-
 import { DatePicker } from "@/components/date-picker";
 import InputImage from "@/components/input-image";
 import QuillEditor from "@/components/quill-editor";
@@ -12,15 +10,12 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Toaster } from "@/components/ui/sonner";
-import { useMutateProject } from "@/hooks/queries/project.query";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { Edit, Edit2 } from "lucide-react";
+import { useState } from "react";
+import { Controller } from "react-hook-form";
 import * as z from "zod";
 
-const formSchema = z.object({
+export const formSchema = z.object({
   name: z.string({ message: "Cannot be empty" }),
   description: z.string({ message: "Cannot be empty" }),
   project_date: z.date({ message: "Cannot be emtpy" }),
@@ -38,41 +33,49 @@ const formSchema = z.object({
     }),
   role: z.string({ message: "Cannot be emtpy" }),
   image: z
-    .instanceof(File)
-    .refine((file) => file.size <= 1.5 * 1024 * 1024, "Max size 1.5MB")
+    .union([
+      z
+        .instanceof(File)
+        .refine((file) => file.size <= 1.5 * 1024 * 1024, "Max size 1.5MB"),
+      z.string(),
+    ])
     .optional(),
 });
 
-const ProjectForm = () => {
-  const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-    },
-  });
+interface ProjectFormProps {
+  initialData?: any;
+  onSuccess?: () => void;
+  form: any;
+  onSubmit: (data: z.infer<typeof formSchema>) => void;
+  isPending?: boolean;
+  isDetail?: boolean;
+  isEdit?: boolean;
+}
 
-  const projectMutation = useMutateProject();
-  const { mutate, isPending } = projectMutation;
-
-  async function onSubmit(data: z.infer<typeof formSchema>) {
-    try {
-      await mutate(data, {
-        onSuccess: () => {
-          toast.success("Project created successfully!");
-          router.push("/administrator/projects");
-        },
-      });
-    } catch (error) {
-      console.error("Failed to submit project:", error);
-    }
-  }
-
+const ProjectForm = ({
+  form,
+  onSubmit,
+  isPending,
+  isDetail,
+}: ProjectFormProps) => {
+  const [onEdit, setOnEdit] = useState<boolean>(false);
+  const { handleSubmit } = form;
   return (
     <div>
+      <div className="w-full flex justify-end items-end px-5">
+        <Button
+          onClick={() => {
+            setOnEdit(true);
+          }}
+          disabled={onEdit}
+          className="bg-transparent cursor-pointer hover:bg-transparent group"
+        >
+          <Edit className="edit-icon size-6 group-hover:opacity-50 transition-opacity" />
+        </Button>
+      </div>
       <CardContent>
         <FieldGroup>
-          <form id="project-form" onSubmit={form.handleSubmit(onSubmit)}>
+          <form id="project-form" onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 mt-5">
               <div className="grid w-full gap-6">
                 {/* Project Name */}
@@ -91,6 +94,7 @@ const ProjectForm = () => {
                           aria-invalid={fieldState.invalid}
                           placeholder="Login button not working on mobile"
                           autoComplete="off"
+                          disabled={isDetail && !onEdit}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -113,6 +117,7 @@ const ProjectForm = () => {
                         <QuillEditor
                           value={field.value || ""}
                           onChange={field.onChange}
+                          disabled={isDetail && !onEdit}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -136,6 +141,7 @@ const ProjectForm = () => {
                           <DatePicker
                             value={field.value}
                             onChange={field.onChange}
+                            disabled={isDetail && !onEdit}
                           />
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -163,6 +169,7 @@ const ProjectForm = () => {
                             aria-invalid={fieldState.invalid}
                             placeholder="https://github.com/riangho"
                             autoComplete="off"
+                            disabled={isDetail && !onEdit}
                           />
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -186,6 +193,7 @@ const ProjectForm = () => {
                             aria-invalid={fieldState.invalid}
                             placeholder="https://yourproject.com"
                             autoComplete="off"
+                            disabled={isDetail && !onEdit}
                           />
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -212,7 +220,11 @@ const ProjectForm = () => {
                           aria-invalid={fieldState.invalid}
                           placeholder="e.q : React JS, Python, NodeJS"
                           autoComplete="off"
+                          disabled={isDetail && !onEdit}
                         />
+                        <span className="text-xs text-primary">
+                          Separate by comma: React JS, Tailwind, Redux
+                        </span>
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -235,6 +247,7 @@ const ProjectForm = () => {
                           aria-invalid={fieldState.invalid}
                           placeholder="Software Engineer"
                           autoComplete="off"
+                          disabled={isDetail && !onEdit}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -258,7 +271,10 @@ const ProjectForm = () => {
                         >
                           <FieldLabel>Project Image</FieldLabel>
 
-                          <InputImage field={field} />
+                          <InputImage
+                            disabled={isDetail && !onEdit}
+                            field={field}
+                          />
 
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -274,14 +290,32 @@ const ProjectForm = () => {
         </FieldGroup>
       </CardContent>
       <CardFooter className="mt-10">
-        <Field orientation="horizontal" className="flex justify-end">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Reset
-          </Button>
-          <Button type="submit" form="project-form" disabled={isPending}>
-            {isPending ? "Submitting..." : "Submit"}
-          </Button>
-        </Field>
+        {onEdit && (
+          <Field orientation="horizontal" className="flex justify-end">
+            <Button
+              className="cursor-pointer"
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (onEdit) {
+                  setOnEdit(false);
+                } else {
+                  form.reset();
+                }
+              }}
+            >
+              {onEdit ? "Cancel" : "Reset"}
+            </Button>
+            <Button
+              className="cursor-pointer"
+              type="submit"
+              form="project-form"
+              disabled={isPending}
+            >
+              {isPending ? "Submitting..." : "Submit"}
+            </Button>
+          </Field>
+        )}
       </CardFooter>
     </div>
   );

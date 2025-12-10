@@ -23,7 +23,7 @@ const PostThumbnail: FC<IPostThumbnail> = ({
       <div className="rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
         <div className="relative w-full h-[300px] lg:h-[400px] bg-muted">
           <Image
-            src={image}
+            src={process.env.NEXT_PUBLIC_STORAGE_URL + image}
             alt="Post Image"
             fill
             className="object-cover"
