@@ -1,28 +1,19 @@
 "use client";
 
+import ProjectForm, { formSchema } from "@/components/project-form";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { useMutateProject } from "@/hooks/queries/project.query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import ProjectForm, { formSchema } from "@/components/project-form";
+import * as z from "zod";
 
 const ProjectAdd = () => {
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-    },
-  });
-
   const projectMutation = useMutateProject();
   const { mutate, isPending } = projectMutation;
 
@@ -47,7 +38,7 @@ const ProjectAdd = () => {
             Every project you add will be shown on the Website, sorted by ASC
             project date
           </CardDescription>
-          <ProjectForm form={form} onSubmit={onSubmit} isPending={isPending} />
+          <ProjectForm onSubmit={onSubmit} isPending={isPending} />
         </CardHeader>
       </Card>
     </div>
