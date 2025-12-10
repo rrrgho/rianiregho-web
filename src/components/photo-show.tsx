@@ -18,12 +18,14 @@ const PhotoShow: FC<IPhotoshow> = ({ image, onClose }) => {
       </div>
 
       <div className="px-5 xl:px-40 h-screen flex justify-center items-center">
-        <div className="w-full h-[300px] md:h-[600px] xl:h-[700px] relative">
+        <div className="relative w-full h-full flex items-center justify-center">
           <Image
             src={process.env.NEXT_PUBLIC_STORAGE_URL + image}
             alt="Photoshow"
-            fill
-            className="rounded-lg"
+            width={1920}
+            height={1080}
+            className="rounded-lg object-contain w-auto h-auto"
+            style={{ maxWidth: "100%", maxHeight: "100%" }}
           />
         </div>
       </div>

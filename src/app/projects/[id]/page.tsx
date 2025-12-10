@@ -4,10 +4,12 @@ import { ErrorState } from "@/components/error-state";
 import PageHeader from "@/components/page-header";
 import PhotoShow from "@/components/photo-show";
 import { ProjectDetailSkeleton } from "@/components/project-detail-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useProjectGaleries } from "@/hooks/queries/project-gallery.query";
 import { useProjectDetail } from "@/hooks/queries/project.query";
 import { renderHtmlContent } from "@/lib/html-parser";
-import { Project } from "@/types/project.types";
-import { ExternalLink, Github } from "lucide-react";
+import { Project, ProjectGallery } from "@/types/project.types";
+import { Box, ExternalLink, Github, ImageOff } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -20,6 +22,11 @@ export default function ProjectDetailPage() {
   const { isLoading, data, error, refetch } = project;
   const projectData: Project | any = data?.data;
   const [showPhotoInFullScreen, setShowPhotoInFullScreen] = useState<any>(null);
+
+  const projectGallery = useProjectGaleries(projectId);
+  const { data: projectGalleryData, isLoading: projectGalleryLoading } =
+    projectGallery;
+  const galleries = projectGalleryData?.data;
 
   const showPhotoGalery = (image: string) => {
     setShowPhotoInFullScreen(image);
@@ -68,8 +75,10 @@ export default function ProjectDetailPage() {
                     process.env.NEXT_PUBLIC_STORAGE_URL + projectData.image_path
                   }
                   alt={projectData.title ?? "Project Thumbnail"}
-                  fill
-                  className="object-cover"
+                  width={1920}
+                  height={1080}
+                  style={{ maxWidth: "100%", maxHeight: "100%" }}
+                  className="rounded-lg object-contain w-auto h-auto"
                 />
               </div>
             </div>
@@ -153,29 +162,54 @@ export default function ProjectDetailPage() {
             <div className="bg-card border border-border rounded-lg p-6  top-24 mt-5">
               <h3 className="font-semibold text-primary">Project Galery</h3>
               <span className="text-sm">
-                Showing the moments of this project benefits my client
+                Showing the moments how this project benefits my client
               </span>
-              <div className="grid grid-cols-3 gap-1 mt-4">
-                <div
-                  className="group relative overflow-hidden rounded-lg"
-                  onClick={() => {
-                    showPhotoGalery(projectData.image_path);
-                  }}
-                >
-                  <Image
-                    src={
-                      process.env.NEXT_PUBLIC_STORAGE_URL +
-                      projectData.image_path
-                    }
-                    alt={projectData.title}
-                    width={100}
-                    height={100}
-                    className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105 "
-                  />
-
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300 cursor-pointer"></div>
+              {projectGalleryLoading && (
+                <div className="grid grid-cols-2 gap-1 mt-4">
+                  {new Array(2).fill("").map((item, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className="group relative overflow-hidden h-[100px] rounded-lg"
+                      >
+                        <Skeleton className="bg-primary/40 h-[100px]" />
+                      </div>
+                    );
+                  })}
                 </div>
+              )}
+
+              {galleries?.length === 0 && (
+                <div className="w-full grid text-center grid-cols-1 justify-center items-center p-5">
+                  <div className="flex justify-center items-center">
+                    <ImageOff className="size-6" />
+                  </div>
+                  <span className="text-sm mt-3">No Galleries found</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-1 mt-4">
+                {galleries?.map((item: ProjectGallery) => {
+                  return (
+                    <div
+                      key={item.id}
+                      className="group relative overflow-hidden h-[100px] rounded-lg"
+                      onClick={() => {
+                        showPhotoGalery(item.image_path);
+                      }}
+                    >
+                      <Image
+                        src={
+                          process.env.NEXT_PUBLIC_STORAGE_URL + item.image_path
+                        }
+                        alt={"Galleries" + item.id}
+                        fill
+                        className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105 "
+                      />
+                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300 cursor-pointer"></div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

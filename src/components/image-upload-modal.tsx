@@ -23,6 +23,7 @@ interface ImageUploadModalProps {
   onUpload?: (file: File, reset: () => void) => void;
   title?: string;
   description?: string;
+  isUploading?: boolean;
 }
 
 export const formSchema = z.object({
@@ -41,6 +42,7 @@ export default function ImageUploadModal({
   onUpload,
   title = "Upload Image",
   description = "Choose an image to upload",
+  isUploading,
 }: ImageUploadModalProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -162,8 +164,8 @@ export default function ImageUploadModal({
             >
               Choose Image
             </Button>
-            <Button type="submit" disabled={!imageValue}>
-              Upload
+            <Button type="submit" disabled={!imageValue && !isUploading}>
+              {isUploading ? "Uploading..." : "Upload"}
             </Button>
           </DialogFooter>
         </form>

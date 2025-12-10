@@ -1,6 +1,7 @@
 "use client";
 import { logout } from "@/lib/actions/auth";
 import {
+  BriefcaseBusiness,
   Calendar,
   EllipsisVertical,
   Home,
@@ -34,6 +35,8 @@ import {
   SidebarTrigger,
 } from "./ui/sidebar";
 import { useLogout } from "@/hooks/use-logout";
+import { Label } from "./ui/label";
+import { Separator } from "./ui/separator";
 
 interface IAdminAppSidebar {
   children: React.ReactNode;
@@ -51,19 +54,9 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Calendar",
+    title: "Work Experience",
     url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    icon: BriefcaseBusiness,
   },
 ];
 
@@ -75,8 +68,18 @@ const AdminAppSidebar = ({ children }: IAdminAppSidebar) => {
       <Sidebar>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Content Management System</SidebarGroupLabel>
-            <SidebarGroupContent>
+            <div className="px-2">
+              <h1>Iregho Web Admin</h1>
+            </div>
+            <SidebarGroupLabel>
+              <span className="text-xs">
+                Manage website content like showing projects, work experience
+                and blog
+              </span>
+            </SidebarGroupLabel>
+
+            <Separator className="mt-3" />
+            <SidebarGroupContent className="mt-5">
               <SidebarMenu>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
@@ -147,7 +150,7 @@ const AdminAppSidebar = ({ children }: IAdminAppSidebar) => {
         </SidebarContent>
       </Sidebar>
       <main className="w-full">
-        <SidebarTrigger />
+        {/* <SidebarTrigger /> */}
         {children}
       </main>
     </SidebarProvider>

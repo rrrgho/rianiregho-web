@@ -14,3 +14,13 @@ export type Project = {
   updated_at: string | any;
   deleted_at: string | null;
 };
+
+export type ProjectGallery = {
+  user_id?: string;
+  project_id?: string;
+  image_path: string;
+  description?: string;
+  id?: string;
+  updated_at?: string;
+  created_at?: string;
+};

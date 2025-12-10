@@ -29,7 +29,6 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -40,17 +39,16 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import { Avatar } from "@/components/ui/avatar";
+import { useDetectPathname } from "@/hooks/use-detect-pathname";
+import { CollapsibleContent } from "@radix-ui/react-collapsible";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import { Fragment, useEffect, useState } from "react";
 import Detikcom from "../../public/svg/detikcom.jpeg";
 import Gic from "../../public/svg/gic.png";
 import Lunata from "../../public/svg/lunata.png";
 import Telkomsel from "../../public/svg/telkomsel.svg";
-import { Fragment, useEffect, useState } from "react";
 import { Collapsible, CollapsibleTrigger } from "./ui/collapsible";
-import { CollapsibleContent } from "@radix-ui/react-collapsible";
-import { usePathname } from "next/navigation";
-import { useDetectPathname } from "@/hooks/use-detect-pathname";
 
 export const JourneyItems: {
   title: string;
