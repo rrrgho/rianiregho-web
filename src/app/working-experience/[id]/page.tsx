@@ -25,20 +25,19 @@ export default function ProjectDetailPage() {
     return <ProjectDetailSkeleton />;
   }
 
-  if (error) {
+  if (error || !detail) {
     return (
-      <ErrorState
-        title="Project Not Found"
-        description="Unable to load the project details."
-        message={
-          error instanceof Error
-            ? error.message
-            : "This project could not be found or is no longer available."
-        }
-        onRetry={() => refetch()}
-        backLink="/projects"
-        backLinkText="Back to Projects"
-      />
+      <div className="h-screen flex justify-center items-center">
+        <ErrorState
+          title="Data Not Found"
+          description="Unable to load the details."
+          message={
+            error instanceof Error
+              ? error.message
+              : "This data could not be found or is no longer available."
+          }
+        />
+      </div>
     );
   }
 

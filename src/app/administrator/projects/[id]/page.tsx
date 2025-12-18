@@ -1,5 +1,6 @@
 "use client";
 import { ErrorState } from "@/components/error-state";
+import { ProjectDetailFormSkeleton } from "@/components/project-detail-form-skeleton";
 import ProjectForm, { projectFormSchema } from "@/components/project-form";
 import ProjectGalleryForm from "@/components/project-gallery-form";
 import {
@@ -45,7 +46,7 @@ const AdminProjectsPage = () => {
   };
 
   if (isLoading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return <ProjectDetailFormSkeleton />;
   }
 
   if (error) {
@@ -62,13 +63,13 @@ const AdminProjectsPage = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full py-10">
       <Card>
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
               <CardTitle>Project Detail</CardTitle>
-              <CardDescription>
+              <CardDescription className="mt-2">
                 Showing what you have made for this project!
               </CardDescription>
             </div>

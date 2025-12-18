@@ -35,6 +35,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import { Avatar } from "@/components/ui/avatar";
@@ -136,13 +137,13 @@ export function Navbar() {
                 </div>
                 <WorkingExperienceNavList />
               </NavigationMenuItem>
-              <NavigationMenuItem className="mr-1">
-                <div
-                  className="flex items-center space-x-2 cursor-pointer hover:bg-primary p-2 rounded-md transition-colors"
-                  onClick={changeTheme}
-                >
-                  {mounted && (theme === "dark" ? <Sun /> : <Moon />)}
-                </div>
+              <NavigationMenuItem className="mr-1 ms-5">
+                <ThemeSwitch
+                  checked={theme === "dark"}
+                  onCheckedChange={(checked) => {
+                    setTheme(checked ? "dark" : "light");
+                  }}
+                />
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -156,12 +157,12 @@ export function Navbar() {
                   <Menu />
                 </Button>
               </DrawerTrigger>
-              <div
-                className="flex items-center space-x-2 cursor-pointer hover:bg-primary p-2 rounded-md transition-colors"
-                onClick={changeTheme}
-              >
-                {mounted && (theme === "dark" ? <SunMedium /> : <Moon />)}
-              </div>
+              <ThemeSwitch
+                checked={theme === "dark"}
+                onCheckedChange={(checked) => {
+                  setTheme(checked ? "dark" : "light");
+                }}
+              />
             </div>
             <DrawerContent>
               <div className="mx-auto w-full max-w-sm">

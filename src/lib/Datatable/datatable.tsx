@@ -43,7 +43,7 @@ function AppDatatable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [params, setParams] = useState<IPaginationParams>({
     page: 1,
-    per_page: 3,
+    per_page: 10,
   });
   const response = useQueryData(endpoint, params);
   const { data, isLoading, error, refetch } = response;
