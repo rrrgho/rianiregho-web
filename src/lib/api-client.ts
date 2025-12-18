@@ -5,6 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { toast } from "sonner";
+import { signOut } from "next-auth/react";
 
 /**
  * Create axios instance with base configuration
@@ -56,18 +57,25 @@ apiClient.interceptors.response.use(
 
     // Handle specific error cases
     if (axiosError.response?.status === 401) {
-      // Handle unauthorized - redirect to login
+      // Handle unauthorized - clear auth and logout
       if (typeof window !== "undefined") {
+        // Clear all token storage
         localStorage.removeItem("authToken");
         sessionStorage.removeItem("bearerToken");
         document.cookie = "authToken=; path=/; max-age=0";
-        // Redirect to admin login if on admin page, otherwise to home
-        const path = window.location.pathname;
-        if (path.startsWith("/administrator")) {
+        document.cookie = "bearerToken=; path=/; max-age=0";
+
+        // Logout from NextAuth and redirect to login
+        toast.error("Session expired. Please login again.");
+
+        // Sign out from GitHub/NextAuth and redirect
+        signOut({
+          redirect: true,
+          callbackUrl: "/login",
+        }).catch(() => {
+          // Fallback if signOut fails
           window.location.href = "/login";
-        } else {
-          window.location.href = "/login";
-        }
+        });
       }
     }
 
