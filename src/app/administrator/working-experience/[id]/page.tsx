@@ -1,6 +1,7 @@
 "use client";
 
 import { ErrorState } from "@/components/error-state";
+import { WorkingExperienceDetailSkeleton } from "@/components/working-experience-detail-skeleton";
 import {
   Card,
   CardContent,
@@ -49,7 +50,7 @@ export default function WorkingExperienceDetailPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return <WorkingExperienceDetailSkeleton />;
   }
 
   if (error) {
@@ -72,7 +73,7 @@ export default function WorkingExperienceDetailPage() {
           <div className="flex justify-between items-start">
             <div>
               <CardTitle>Working Experience Detail</CardTitle>
-              <CardDescription>
+              <CardDescription className="mt-2">
                 Showing what you have done on this place !
               </CardDescription>
             </div>
