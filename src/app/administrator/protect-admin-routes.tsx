@@ -8,46 +8,35 @@ import { Spinner } from "@/components/ui/spinner";
 const ProtectAdminRoutes = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const router = useRouter();
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (session.status === "authenticated") {
-      const bearerToken = sessionStorage.getItem("bearerToken");
+    // Wait for session to load
+    if (session.status === "loading") return;
 
-      if (!bearerToken) {
-        router.push("/api/auth/validate-token");
-      } else {
-        // Token exists, user is authorized
-        setIsAuthorized(true);
-        setIsLoading(false);
-      }
-    } else if (session.status === "unauthenticated") {
+    if (session.status === "authenticated") {
+      // User is logged in with GitHub
+      // Middleware already protected this route, so we're good
+      setIsReady(true);
+    } else {
       // Not logged in, redirect to login
-      router.push("/login");
+      router.replace("/login");
     }
   }, [session.status, router]);
 
   // Show loading while checking authentication
-  if (isLoading || session.status === "loading") {
+  if (session.status === "loading" || !isReady) {
     return (
       <div className="flex w-full h-screen justify-center items-center">
         <div className="flex flex-col gap-4 items-center">
           <Spinner className="size-8" />
-          <p className="text-muted-foreground">
-            Checking authorization {session.status}...
-          </p>
+          <p className="text-muted-foreground">Verifying access...</p>
         </div>
       </div>
     );
   }
 
-  // Show nothing while redirecting
-  if (!isAuthorized) {
-    return null;
-  }
-
-  // User is authorized - render children
+  // User is authenticated - render children
   return <div>{children}</div>;
 };
 

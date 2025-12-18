@@ -8,42 +8,33 @@ import React, { useEffect, useState } from "react";
 const ProtectLoginRoute = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (session.status === "authenticated") {
-      const token = sessionStorage.getItem("bearerToken");
-      if (!token) {
-        router.push("/api/auth/validate-token");
-      } else {
-        if (typeof window !== undefined) {
-          console.log("HARD RELOAD: to administrator", session.status);
-          // window.location.href = "/administrator";
-        } else {
-          console.log("PUSH: to administrator", session.status);
-          // router.push("/administrator");
-        }
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, [session]);
+    // Wait for session to load
+    if (session.status === "loading") return;
 
-  // Show loading while checking authentication
-  if (isLoading || session.status === "loading") {
+    if (session.status === "authenticated") {
+      // User is logged in with GitHub, redirect to admin
+      router.replace("/administrator");
+    } else {
+      // User not authenticated, show login page
+      setIsReady(true);
+    }
+  }, [session.status, router]);
+
+  // Show loading while checking session
+  if (session.status === "loading" || !isReady) {
     return (
       <div className="flex w-full h-screen justify-center items-center">
         <div className="flex flex-col gap-4 items-center">
           <Spinner className="size-8" />
-          <p className="text-muted-foreground">Checking authorization...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
   }
 
-  if (session.status === "authenticated") {
-    return null;
-  }
   return <div>{children}</div>;
 };
 
