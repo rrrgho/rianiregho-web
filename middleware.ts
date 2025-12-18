@@ -1,41 +1,42 @@
+import { auth } from "@/auth";
 import { type NextRequest, NextResponse } from "next/server";
 
 /**
  * Main middleware for authentication
- *
- * Checks for bearer token in HttpOnly cookie
- * If token exists, validates it with backend
- * If no token or invalid, redirects to /administrator/login
+ * Uses NextAuth's auth to protect routes
  */
-export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+export default auth((req) => {
+  const { pathname } = req.nextUrl;
 
-  // Allow /administrator/login without token
-  if (pathname === "/login") {
+  // Allow public routes
+  if (
+    pathname === "/login" ||
+    pathname === "/" ||
+    pathname.startsWith("/projects") ||
+    pathname.startsWith("/working-experience")
+  ) {
     return NextResponse.next();
   }
 
-  // Check for bearer token in HttpOnly cookie
-  const bearerToken = request.cookies.get("bearerToken")?.value;
+  // Protect /administrator routes
+  if (pathname.startsWith("/administrator")) {
+    // If not authenticated, redirect to login
+    if (!req.auth) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
 
-  // If no token and trying to access protected route, redirect to login
-  if (!bearerToken && pathname.startsWith("/administrator")) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    // Check for bearer token
+    const bearerToken = req.cookies.get("bearerToken")?.value;
+    if (!bearerToken) {
+      // Token not present, but user is logged in with GitHub
+      // This will be validated client-side or through API
+      return NextResponse.next();
+    }
   }
 
-  // If token exists, you could optionally validate with backend here
-  // For now, the presence of the cookie is enough (set by server-side action)
-
   return NextResponse.next();
-}
+});
 
-/**
- * Middleware matcher configuration
- * Specifies which routes should trigger middleware
- */
 export const config = {
-  matcher: [
-    // Protect all /administrator routes
-    "/administrator/:path*",
-  ],
+  matcher: ["/administrator/:path*", "/api/auth/:path*"],
 };
