@@ -51,14 +51,15 @@ const SocialMedia = ({ isMobile }: { isMobile: boolean }) => {
     <NavigationMenu className="w-full" viewport={isMobile}>
       <NavigationMenuList className="w-full flex-wrap">
         <NavigationMenuItem className="mr-1">
-          <Avatar
-            onClick={() => {
-              alert("s");
-            }}
-            className="items-center hover:bg-primary cursor-pointer justify-center p-2 border border-2"
+          <Link
+            href="https://medium.com/@rianiregho"
+            target="_blank"
+            className="text-sm"
           >
-            <Instagram className="text-center" />
-          </Avatar>
+            <Button variant="outline" className="cursor-pointer">
+              Follow on Medium
+            </Button>
+          </Link>
         </NavigationMenuItem>
         <NavigationMenuItem className="mr-1">
           <Link

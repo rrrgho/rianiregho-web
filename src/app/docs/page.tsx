@@ -47,7 +47,7 @@ export default function DocsPage() {
           <div className="space-y-4">
             <h2 className="text-3xl font-bold">Welcome to rianiregho-web</h2>
             <p className="text-lg text-muted-foreground">
-              A modern, full-featured portfolio website showcasing projects and
+              A simple-featured portfolio website showcasing projects and
               working experience with a complete admin dashboard for content
               management.
             </p>

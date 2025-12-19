@@ -70,12 +70,14 @@ export default function Home() {
               </span>
             </div>
             <div className="w-full mt-4">
-              <Button className="p-5 md:p-7">
-                <IconLink />
-                <span className="text-sm lg:text-lg cursor-pointer">
-                  Get in touch
-                </span>
-              </Button>
+              <Link href="/get-in-touch">
+                <Button className="p-5 md:p-7">
+                  <IconLink />
+                  <span className="text-sm lg:text-lg cursor-pointer">
+                    Get in touch
+                  </span>
+                </Button>
+              </Link>
             </div>
             <div className="w-[400px] lg:w-[500px] mt-5 flex flex-nowrap">
               <GithubIcon size={20} />
