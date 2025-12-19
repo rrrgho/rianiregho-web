@@ -1,25 +1,26 @@
 import { useWorkingExperiences } from "@/hooks/queries/working-experience.query";
 import { WorkingExperience } from "@/types/working-experience.types";
 import Image from "next/image";
-import { NavigationMenuContent } from "./ui/navigation-menu";
 import { Skeleton } from "./ui/skeleton";
 import Link from "next/link";
 
-const WorkingExperienceNavMobileList = () => {
+const WorkingExperienceNavMobileList = ({
+  onNavigate,
+}: {
+  onNavigate?: () => void;
+}) => {
   const workingExperiences = useWorkingExperiences();
   const { data, isLoading, error } = workingExperiences;
   const workingExperienceData = data?.data || [];
 
   if (isLoading) {
     return (
-      <NavigationMenuContent>
-        <div className="grid gap-2 grid-cols-2 w-[400px] h-[100px]">
-          <Skeleton className="h-full" />
-          <Skeleton className="h-full" />
-          <Skeleton className="h-full" />
-          <Skeleton className="h-full" />
-        </div>
-      </NavigationMenuContent>
+      <div className="grid gap-2 grid-cols-2 w-[400px] h-[100px]">
+        <Skeleton className="h-full" />
+        <Skeleton className="h-full" />
+        <Skeleton className="h-full" />
+        <Skeleton className="h-full" />
+      </div>
     );
   }
 
@@ -28,7 +29,7 @@ const WorkingExperienceNavMobileList = () => {
       {workingExperienceData.map((item: WorkingExperience) => {
         const icon = item?.icon ?? "";
         return (
-          <Link href={`/working-experience/${item.id}`}>
+          <Link href={`/working-experience/${item.id}`} onClick={onNavigate}>
             <div className="px-2 mt-2" key={item.title}>
               <div className="border border-1 rounded-lg p-2">
                 <div className="text-sm leading-none font-medium flex flex-nowrap items-center">

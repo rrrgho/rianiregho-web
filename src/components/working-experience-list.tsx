@@ -18,12 +18,10 @@ const WorkingExperienceList = ({
 
   if (isLoading) {
     return (
-      <NavigationMenuContent>
-        <div className="grid gap-2 grid-cols-1 w-full h-[100px]">
-          <Skeleton className="h-full" />
-          <Skeleton className="h-full" />
-        </div>
-      </NavigationMenuContent>
+      <div className="grid gap-2 grid-cols-1 w-full h-[100px]">
+        <Skeleton className="h-full" />
+        <Skeleton className="h-full" />
+      </div>
     );
   }
 

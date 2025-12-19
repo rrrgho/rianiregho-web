@@ -33,7 +33,10 @@ export default function Home() {
           <div>
             <Image src={MainChar} fill alt="Rian Iregho" />
           </div>
-          <div className="absolute top-0 left-0 bg-slate-950/40 w-full h-full"></div>
+          <div
+            className="absolute top-0 left-0 w-full h-full"
+            style={{ background: "#111111", opacity: 0.6 }}
+          ></div>
         </div>
 
         <div
@@ -103,7 +106,10 @@ export default function Home() {
           <div>
             <Image src={MainChar} fill className="" alt="Rian Iregho" />
           </div>
-          <div className="absolute top-0 left-0 bg-green-950/30 w-full h-full"></div>
+          <div
+            className="absolute top-0 left-0 w-full h-full"
+            style={{ background: "#111111", opacity: 0.6 }}
+          ></div>
         </div>
       </div>
     </div>

@@ -46,10 +46,47 @@ import { Collapsible, CollapsibleTrigger } from "./ui/collapsible";
 import WorkingExperienceNavList from "./working-experience-nav-list";
 import WorkingExperienceNavMobileList from "./working-experience-nav-mobile-list";
 
+const SocialMedia = ({ isMobile }: { isMobile: boolean }) => {
+  return (
+    <NavigationMenu className="w-full" viewport={isMobile}>
+      <NavigationMenuList className="w-full flex-wrap">
+        <NavigationMenuItem className="mr-1">
+          <Avatar
+            onClick={() => {
+              alert("s");
+            }}
+            className="items-center hover:bg-primary cursor-pointer justify-center p-2 border border-2"
+          >
+            <Instagram className="text-center" />
+          </Avatar>
+        </NavigationMenuItem>
+        <NavigationMenuItem className="mr-1">
+          <Link
+            href="https://www.facebook.com/profile.php?id=61550814435864"
+            target="_blank"
+          >
+            <Avatar className="items-center hover:bg-primary cursor-pointer justify-center p-2 border border-2">
+              <Facebook className="text-center" />
+            </Avatar>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem className="mr-1">
+          <Link href="https://www.linkedin.com/in/rian-gho/" target="_blank">
+            <Avatar className="items-center hover:bg-primary cursor-pointer justify-center p-2 border border-2">
+              <Linkedin className="text-center" />
+            </Avatar>
+          </Link>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+};
+
 export function Navbar() {
   const isMobile = useIsMobile();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const isAdminPage = useDetectPathname({ pathname: "administrator" });
 
   useEffect(() => {
@@ -64,31 +101,7 @@ export function Navbar() {
     return (
       <Fragment>
         <div className="w-full flex flex-row justify-center md:justify-between px-5 lg:px-40 py-4 md:py-5 md fixed top-0 z-40">
-          <NavigationMenu className="w-full" viewport={isMobile}>
-            <NavigationMenuList className="w-full flex-wrap">
-              <NavigationMenuItem className="mr-1">
-                <Avatar
-                  onClick={() => {
-                    alert("s");
-                  }}
-                  className="items-center hover:bg-primary cursor-pointer justify-center p-2 border border-2"
-                >
-                  <Instagram className="text-center" />
-                </Avatar>
-              </NavigationMenuItem>
-              <NavigationMenuItem className="mr-1">
-                <Avatar className="items-center hover:bg-primary cursor-pointer justify-center p-2 border border-2">
-                  <Facebook className="text-center" />
-                </Avatar>
-              </NavigationMenuItem>
-              <NavigationMenuItem className="mr-1">
-                <Avatar className="items-center hover:bg-primary cursor-pointer justify-center p-2 border border-2">
-                  <Linkedin className="text-center" />
-                </Avatar>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-
+          <SocialMedia isMobile={isMobile} />
           <NavigationMenu className="w-full" viewport={isMobile}>
             <NavigationMenuList className="w-full flex-wrap">
               <NavigationMenuItem>
@@ -136,13 +149,14 @@ export function Navbar() {
         </div>
 
         <div>
-          <Drawer>
-            <div className="md:hidden fixed top-5 z-40 w-full flex flex-row justify-between px-5">
+          <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+            <div className="md:hidden px-5 fixed top-5 z-40 w-full flex flex-row justify-between ">
               <DrawerTrigger asChild>
                 <Button variant="outline">
                   <Menu />
                 </Button>
               </DrawerTrigger>
+              <SocialMedia isMobile={false} />
               <ThemeSwitch
                 checked={theme === "dark"}
                 onCheckedChange={(checked) => {
@@ -150,21 +164,20 @@ export function Navbar() {
                 }}
               />
             </div>
+            {/* Mobile Menu */}
             <DrawerContent>
               <div className="mx-auto w-full max-w-sm">
                 <DrawerHeader>
                   <DrawerTitle>You are goergous !</DrawerTitle>
-                  <DrawerDescription>
-                    Always say thank you for today, new day is new chance to do
-                    good thing
-                  </DrawerDescription>
                 </DrawerHeader>
-                <div className="flex flex-row m-2 p-2">
-                  <div>
-                    <Home />
+                <Link href="/" onClick={() => setDrawerOpen(false)}>
+                  <div className="flex flex-row m-2 p-2">
+                    <div>
+                      <Home />
+                    </div>
+                    <div className="ms-3">Home</div>
                   </div>
-                  <div className="ms-3">Home</div>
-                </div>
+                </Link>
                 <div className="m-2 p-2 rounded">
                   <Collapsible defaultOpen className="group/collapsible">
                     <CollapsibleTrigger asChild>
@@ -179,22 +192,28 @@ export function Navbar() {
                       </div>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                      <WorkingExperienceNavMobileList />
+                      <WorkingExperienceNavMobileList
+                        onNavigate={() => setDrawerOpen(false)}
+                      />
                     </CollapsibleContent>
                   </Collapsible>
                 </div>
-                <div className="flex flex-row m-2 p-2">
-                  <div>
-                    <Book />
+                <Link href="/docs" onClick={() => setDrawerOpen(false)}>
+                  <div className="flex flex-row m-2 p-2">
+                    <div>
+                      <Book />
+                    </div>
+                    <div className="ms-3">Docs</div>
                   </div>
-                  <div className="ms-3">Blogs</div>
-                </div>
-                <div className="flex flex-row m-2 p-2">
-                  <div>
-                    <Briefcase />
+                </Link>
+                <Link href="/projects" onClick={() => setDrawerOpen(false)}>
+                  <div className="flex flex-row m-2 p-2">
+                    <div>
+                      <Briefcase />
+                    </div>
+                    <div className="ms-3">Projects</div>
                   </div>
-                  <div className="ms-3">Projects</div>
-                </div>
+                </Link>
                 <DrawerFooter></DrawerFooter>
               </div>
             </DrawerContent>
