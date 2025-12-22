@@ -10,9 +10,12 @@ interface IPhotoshow {
 
 const PhotoShow: FC<IPhotoshow> = ({ image, onClose }) => {
   return (
-    <div className="bg-zinc-950/80 fixed top-0 right-0 w-full h-screen z-40">
+    <div
+      className="bg-zinc-950/80 fixed top-0 right-0 w-full h-screen z-40"
+      onClick={onClose}
+    >
       <div className="w-full absolute top-0 right-0 flex justify-end items-center">
-        <div onClick={onClose} className="mr-10 mt-10">
+        <div className="mr-10 mt-10">
           <CircleX size={30} className="cursor-pointer hover:opacity-50" />
         </div>
       </div>

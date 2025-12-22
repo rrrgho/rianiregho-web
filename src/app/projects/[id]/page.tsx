@@ -32,7 +32,10 @@ export default function ProjectDetailPage() {
     setShowPhotoInFullScreen(image);
   };
 
-  const hidePhotoGalery = () => setShowPhotoInFullScreen(null);
+  const hidePhotoGalery = () => {
+    console.log("TRIGG");
+    setShowPhotoInFullScreen(null);
+  };
 
   // Show loading skeleton
   if (isLoading) {
