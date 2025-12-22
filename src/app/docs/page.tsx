@@ -210,6 +210,16 @@ GITHUB_SECRET=your_github_oauth_secret`}</code>
               PostgreSQL.
             </p>
 
+            <div className="p-4 bg-amber-50 dark:bg-amber-950 rounded-lg border border-amber-200 dark:border-amber-800 mb-6">
+              <p className="text-sm text-amber-900 dark:text-amber-100">
+                <strong>Why Laravel?</strong> The API was already established
+                from the previous website version. We are actively migrating to
+                a Next.js API, but the transition is still in development. For
+                now, the Laravel API continues to power the backend while we
+                work on the migration.
+              </p>
+            </div>
+
             <div className="space-y-6">
               <div>
                 <h3 className="text-xl font-bold mb-3">
