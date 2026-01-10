@@ -10,12 +10,15 @@ import {
 } from "@/components/ui/tooltip";
 import { useDynamicHeight } from "@/hooks/use-dynamic-height";
 import { useProjectStore } from "@/store/useProjectStore";
-import { GithubIcon, Link as IconLink } from "lucide-react";
+import { GithubIcon, Link as IconLink, Video, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+
 export default function Home() {
   const isTall = useDynamicHeight();
   const projectName = useProjectStore((state) => state.name);
+  const [showVideo, setShowVideo] = useState(false);
   return (
     <div className={`relative ${isTall ? "h-screen" : "h-[700px]"}`}>
       <div className="fixed w-[25px] h-[25px] bottom-5 right-5 z-95 rounded-full overflow-hidden">
@@ -78,6 +81,16 @@ export default function Home() {
                   </span>
                 </Button>
               </Link>
+              <Button
+                className="p-5 md:p-7 ms-2"
+                variant="outline"
+                onClick={() => setShowVideo(true)}
+              >
+                <Video />
+                <span className="text-sm lg:text-lg cursor-pointer">
+                  Hi, I'm greeting you
+                </span>
+              </Button>
             </div>
             <div className="w-[400px] lg:w-[500px] mt-5 flex flex-nowrap">
               <GithubIcon size={20} />
@@ -114,6 +127,35 @@ export default function Home() {
           ></div>
         </div>
       </div>
+
+      {/* Video Modal Overlay */}
+      {showVideo && (
+        <div className="fixed inset-0 z-95 bg-black/80 flex items-center justify-center p-4">
+          <div className="w-full max-w-4xl">
+            <div className="flex justify-end mb-4">
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => setShowVideo(false)}
+                className="text-white hover:bg-white/20"
+              >
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+            <div
+              className="relative w-full bg-black rounded-lg overflow-hidden"
+              style={{ paddingBottom: "62.5%" }}
+            >
+              <iframe
+                src="https://www.loom.com/embed/ad9a9e31f899482d9b17c1aa0454fe47"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
