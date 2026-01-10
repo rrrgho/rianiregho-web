@@ -88,7 +88,7 @@ export default function Home() {
               >
                 <Video />
                 <span className="text-sm lg:text-lg cursor-pointer">
-                  Hi, I'm greeting you
+                  Hi, Watch my intro
                 </span>
               </Button>
             </div>
