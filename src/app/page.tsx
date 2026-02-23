@@ -18,8 +18,6 @@ export default function Home() {
   const isTall = useDynamicHeight();
   const [showVideo, setShowVideo] = useState(false);
 
-  const [state, setState] = useState(1);
-
   return (
     <div className={`relative ${isTall ? "h-screen" : "h-[700px]"}`}>
       <div className="fixed w-[25px] h-[25px] bottom-5 right-5 z-95 rounded-full overflow-hidden">
@@ -78,17 +76,14 @@ export default function Home() {
                 <Button className="p-5 md:p-7">
                   <IconLink />
                   <span className="text-sm lg:text-lg cursor-pointer">
-                    Get in touch {state}
+                    Get in touch
                   </span>
                 </Button>
               </Link>
               <Button
                 className="p-5 md:p-7 ms-2"
                 variant="outline"
-                // onClick={() => setShowVideo(true)}
-                onClick={() => {
-                  setState(state + 1);
-                }}
+                onClick={() => setShowVideo(true)}
               >
                 <Video />
                 <span className="text-sm lg:text-lg cursor-pointer">
