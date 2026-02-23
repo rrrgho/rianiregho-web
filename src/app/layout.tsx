@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import NextTopLoader from 'nextjs-toploader';
 import { ReactQueryProvider } from "@/providers/react-query-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -40,6 +41,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <NextTopLoader color="#7c3aed" showSpinner={false} />
               <Navbar />
               {children}
               {/* <MobileMenuBar /> */}
