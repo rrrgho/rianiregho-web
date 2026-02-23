@@ -9,7 +9,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useDynamicHeight } from "@/hooks/use-dynamic-height";
-import { useProjectStore } from "@/store/useProjectStore";
 import { GithubIcon, Link as IconLink, Video, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,8 +16,10 @@ import { useState } from "react";
 
 export default function Home() {
   const isTall = useDynamicHeight();
-  const projectName = useProjectStore((state) => state.name);
   const [showVideo, setShowVideo] = useState(false);
+
+  const [state, setState] = useState(1);
+
   return (
     <div className={`relative ${isTall ? "h-screen" : "h-[700px]"}`}>
       <div className="fixed w-[25px] h-[25px] bottom-5 right-5 z-95 rounded-full overflow-hidden">
@@ -63,7 +64,7 @@ export default function Home() {
             <div className="leading-none">
               {/* <span className="text-[110px] font-extrabold">RIAN</span> <br /> */}
               <span className="text-[60px] lg:text-[80px] 2xl:text-[110px] font-extrabold ms-[-5px]">
-                Rian {projectName} Iregho
+                Rian Iregho
               </span>
             </div>
             <div className="w-[400px] lg:w-[500px] mt-5">
@@ -77,14 +78,17 @@ export default function Home() {
                 <Button className="p-5 md:p-7">
                   <IconLink />
                   <span className="text-sm lg:text-lg cursor-pointer">
-                    Get in touch
+                    Get in touch {state}
                   </span>
                 </Button>
               </Link>
               <Button
                 className="p-5 md:p-7 ms-2"
                 variant="outline"
-                onClick={() => setShowVideo(true)}
+                // onClick={() => setShowVideo(true)}
+                onClick={() => {
+                  setState(state + 1);
+                }}
               >
                 <Video />
                 <span className="text-sm lg:text-lg cursor-pointer">
