@@ -1,20 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import {
-  Code2,
-  GitBranch,
-  Zap,
-  Database,
-  Box,
-  Github,
-  Server,
-  Layers,
-} from "lucide-react";
-import Image from "next/image";
+import addWorkExperienceImg from "@/assets/images/add-work-experience.png";
+import listWorkExperienceImg from "@/assets/images/list-work-experience.png";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
@@ -22,8 +10,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import listWorkExperienceImg from "@/assets/images/list-work-experience.png";
-import addWorkExperienceImg from "@/assets/images/add-work-experience.png";
+import { Separator } from "@/components/ui/separator";
+import {
+  Box,
+  Code2,
+  Database,
+  GitBranch,
+  Github,
+  Layers,
+  Server,
+  Zap,
+} from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState("overview");

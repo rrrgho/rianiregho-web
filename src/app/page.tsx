@@ -80,16 +80,6 @@ export default function Home() {
                   </span>
                 </Button>
               </Link>
-              <Button
-                className="p-5 md:p-7 ms-2"
-                variant="outline"
-                onClick={() => setShowVideo(true)}
-              >
-                <Video />
-                <span className="text-sm lg:text-lg cursor-pointer">
-                  Hi, Watch my intro
-                </span>
-              </Button>
             </div>
             <div className="w-[400px] lg:w-[500px] mt-5 flex flex-nowrap">
               <GithubIcon size={20} />
