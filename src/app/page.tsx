@@ -19,7 +19,7 @@ export default function Home() {
   const [showVideo, setShowVideo] = useState(false);
 
   return (
-    <div className={`relative ${isTall ? "h-screen" : "h-[700px]"}`}>
+    <div className={`relative max-w-[1920px] mx-auto ${isTall ? "h-screen" : "h-[700px]"}`}>
       <div className="fixed w-[25px] h-[25px] bottom-5 right-5 z-95 rounded-full overflow-hidden">
         <Tooltip>
           <TooltipTrigger>

@@ -11,7 +11,7 @@ export default function ProjectsPage() {
 
   if (isLoading) {
     return (
-      <div className="px-5 lg:px-40">
+      <div className="max-w-[1920px] mx-auto px-5 lg:px-40">
         <ThumbnailSkeleton count={4} />
       </div>
     );
@@ -19,7 +19,7 @@ export default function ProjectsPage() {
 
   if (error) {
     return (
-      <div className="px-5 lg:px-40">
+      <div className="max-w-[1920px] mx-auto px-5 lg:px-40">
         <ErrorGrid
           title="Failed to load projects"
           description={
@@ -34,7 +34,7 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="px-5 lg:px-40">
+    <div className="max-w-[1920px] mx-auto px-5 lg:px-40">
       <div className="grid md:grid-cols-2 gap-3">
         {data?.data.map((item: Project) => {
           return (

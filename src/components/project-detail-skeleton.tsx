@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
  */
 export function ProjectDetailSkeleton() {
   return (
-    <div className="w-full min-h-screen px-5 lg:px-40 py-20">
+    <div className="w-full max-w-[1920px] mx-auto min-h-screen px-5 lg:px-40 py-20">
       {/* Breadcrumbs Skeleton */}
       <div className="mb-8 flex gap-2">
         <Skeleton className="bg-primary/20 h-5 w-16" />

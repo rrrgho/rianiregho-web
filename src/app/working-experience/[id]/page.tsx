@@ -52,7 +52,7 @@ export default function ProjectDetailPage() {
         title={detail?.title}
         description="See what amazing from this working experience"
       />
-      <div className="w-full min-h-screen px-5 lg:px-40">
+      <div className="w-full max-w-[1920px] mx-auto min-h-screen px-5 lg:px-40">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-2">

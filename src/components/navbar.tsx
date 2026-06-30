@@ -101,7 +101,8 @@ export function Navbar() {
   if (mounted) {
     return (
       <Fragment>
-        <div className="w-full flex flex-row justify-center md:justify-between px-5 lg:px-40 py-4 md:py-5 md fixed top-0 z-40">
+        <div className="w-full fixed top-0 z-40">
+          <div className="max-w-[1920px] mx-auto flex flex-row justify-center md:justify-between px-5 lg:px-40 py-4 md:py-5">
           <SocialMedia isMobile={isMobile} />
           <NavigationMenu className="w-full" viewport={isMobile}>
             <NavigationMenuList className="w-full flex-wrap">
@@ -147,6 +148,7 @@ export function Navbar() {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
+          </div>
         </div>
 
         <div>
