@@ -24,7 +24,7 @@ services:
     # Uploaded images live on the host so they survive rebuilds.
     # Must be writable by uid 1001 (see docs/DEPLOYMENT.md).
     volumes:
-      - ${UPLOADS_HOST_DIR:-/var/www/rp/iregho-web/uploads}:/data/uploads
+      - ${UPLOADS_HOST_DIR:-/var/www/rp/rianiregho-web-uploads}:/data/uploads
 
     security_opt:
       - no-new-privileges:true

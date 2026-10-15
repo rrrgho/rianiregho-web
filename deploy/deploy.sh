@@ -9,7 +9,7 @@
 set -euo pipefail
 
 SERVER="${DEPLOY_SERVER:-root@31.97.107.242}"
-DEPLOY_DIR="${DEPLOY_DIR:-/var/www/rp/iregho-web/rianiregho-web}"
+DEPLOY_DIR="${DEPLOY_DIR:-/var/www/rp/rianiregho-web}"
 HEALTH_URL="http://127.0.0.1:8021/api/health"
 
 cd "$(dirname "$0")/.."

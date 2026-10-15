@@ -14,8 +14,8 @@ Visitor ──HTTPS──▶ Cloudflare ──▶ Apache (:443) ──▶ 127.0.
 | Thing            | Value                                                           |
 | ---------------- | --------------------------------------------------------------- |
 | Server           | `31.97.107.242`                                                 |
-| App folder       | `/var/www/rp/iregho-web/rianiregho-web`                         |
-| Uploads folder   | `/var/www/rp/iregho-web/uploads` (mounted at `/data/uploads`)   |
+| App folder       | `/var/www/rp/rianiregho-web`                         |
+| Uploads folder   | `/var/www/rp/rianiregho-web-uploads` (mounted at `/data/uploads`)   |
 | Container / port | `rianiregho-web`, host `127.0.0.1:8021` → container `3000`      |
 | Database         | `pgdb` container, db `rianiregho_web`, host port `5432`         |
 
@@ -27,6 +27,72 @@ Files involved: [`Dockerfile`](../Dockerfile), [`docker-compose.yml`](../docker-
 
 ---
 
+## Redeploy after you change the project
+
+Day-to-day this is all you need. The database and uploaded images live outside
+the container, so a redeploy never touches them.
+
+```
+ your machine                                   server
+ ────────────                                   ──────
+ 1. test         npm run build  (optional)
+ 2. commit + push to main
+                                                3. ssh in, then:
+                                                   cd /var/www/rp/rianiregho-web
+                                                   ./deploy/update.sh
+                                                4. check https://rianiregho.com
+```
+
+**What step 3 does:** `git pull --ff-only` → tags the running image as
+`rianiregho-web:previous` → `docker compose build` → `docker compose up -d` →
+waits for `/api/health` and prints `OK: deployed <commit>` (or the logs and the
+rollback command if it fails). The build takes a few minutes; the old container
+keeps serving until the new one is ready, so downtime is only a few seconds.
+
+**Quick checks afterwards**
+
+```bash
+docker compose ps                           # rianiregho-web: Up (healthy)
+curl -s https://rianiregho.com/api/health   # {"status":"ok"}
+docker compose logs --tail=50 web           # no errors
+```
+
+Then open the site and try what you changed (and log in once if auth was touched).
+
+### What to do for each kind of change
+
+| You changed...                                        | Do this on the server                                                                                                                                      |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pages, components, API routes, styles, dependencies   | `./deploy/update.sh`                                                                                                                                       |
+| `Dockerfile` or `docker-compose.yml`                  | `./deploy/update.sh` (it rebuilds and recreates the container)                                                                                             |
+| A **database table or column** (new file in `db/migrations/`) | Run the migration **first**, then deploy: `docker exec -i pgdb psql -U postgres -d rianiregho_web < db/migrations/00X_name.sql` after `git pull`, then `./deploy/update.sh`. Keep migrations additive and idempotent so the old version keeps working until the new one is up. |
+| An environment variable (`.env.production`)           | Edit the file, then `docker compose up -d`. A plain `restart` does **not** re-read it.                                                                      |
+| `NEXT_PUBLIC_*` values (build args in `docker-compose.yml`) | They are baked into the browser bundle: redeploy with `./deploy/update.sh` so the image is rebuilt.                                                  |
+| The Apache config (`deploy/apache-rianiregho.conf`)   | Copy it to `/etc/apache2/sites-available/rianiregho-web.conf` **and** apply the same change to certbot's `rianiregho-web-le-ssl.conf`, then `apache2ctl configtest && systemctl reload apache2`. The container does not need a rebuild. |
+| Only uploaded content (photos, text via the admin)    | Nothing: it is saved straight to the database and the uploads folder.                                                                                       |
+
+### If something goes wrong
+
+- **`update.sh` says "Not possible to fast-forward" or complains about local changes**
+  - the server's checkout differs from `origin/main`. Look with `git status` and
+  `git diff`. If the edits are not needed: `git checkout -- . && ./deploy/update.sh`.
+  Never edit code directly on the server; change it locally and push.
+- **Build fails or the health check fails after a deploy** — the script prints the
+  logs. Either fix and push again, or go back to the last working image:
+  ```bash
+  docker tag rianiregho-web:previous rianiregho-web:latest
+  docker compose up -d --no-build
+  ```
+  This only undoes the *running* container. To also undo the code, `git revert`
+  the bad commit locally and push, so `main` is good again.
+- **`Permission denied` running the script** — run it as `bash deploy/update.sh`.
+- **Server disk filling up with old images** — `docker image prune -f` runs on
+  every deploy; occasionally also run `docker builder prune -f`.
+- **Deploy without Git** — from your machine, `./deploy/deploy.sh` copies your
+  working tree over SSH (see section 2, Option B).
+
+---
+
 ## 1. One-time server setup
 
 SSH to the server (use an SSH key; see [Hardening](#8-hardening-recommended)).
@@ -34,21 +100,22 @@ SSH to the server (use an SSH key; see [Hardening](#8-hardening-recommended)).
 ### 1.1 Create folders
 
 ```bash
-mkdir -p /var/www/rp/iregho-web/rianiregho-web /var/www/rp/iregho-web/uploads
+mkdir -p /var/www/rp/rianiregho-web-uploads
 # The container runs as uid/gid 1001 and must be able to write uploads:
-chown -R 1001:1001 /var/www/rp/iregho-web/uploads
+chown -R 1001:1001 /var/www/rp/rianiregho-web-uploads
 ```
 
 ### 1.2 Copy the existing uploaded images
 
-The old Laravel API stored images in `storage/app/public`. The paths saved in the
-database (e.g. `projects/images/abc.png`) are relative, so a straight copy is all
-that is needed:
+The old Laravel API stored images in `storage/app/public` (its folder has since
+been removed from this server, so use a backup or a local copy). The paths saved
+in the database (e.g. `projects/images/abc.png`) are relative, so a straight copy
+of that folder's contents is all that is needed:
 
 ```bash
-rsync -a /var/www/rp/iregho-web/rianiregho-web-api/storage/app/public/ /var/www/rp/iregho-web/uploads/
-chown -R 1001:1001 /var/www/rp/iregho-web/uploads
-ls /var/www/rp/iregho-web/uploads        # projects, project-gallery, work-experience-*
+rsync -a /var/www/rp/rianiregho-web-api/storage/app/public/ /var/www/rp/rianiregho-web-uploads/
+chown -R 1001:1001 /var/www/rp/rianiregho-web-uploads
+ls /var/www/rp/rianiregho-web-uploads        # projects, project-gallery, work-experience-*
 ```
 
 ### 1.3 Database changes
@@ -66,7 +133,7 @@ docker exec -i pgdb psql -U postgres -d rianiregho_web < db/migrations/001_creat
 ### 1.4 Create `.env.production`
 
 ```bash
-cd /var/www/rp/iregho-web/rianiregho-web
+cd /var/www/rp/rianiregho-web
 cp deploy/env.production.example .env.production
 nano .env.production
 chmod 600 .env.production
@@ -86,9 +153,15 @@ URL-encode special characters in the DB password (`?` → `%3F`, `@` → `%40`,
 
 No `AUTH_URL` is needed: the site address is read from the proxied request.
 
+Also create a one-line `.env` (used by `docker compose` for the uploads volume):
+
+```bash
+echo 'UPLOADS_HOST_DIR=/var/www/rp/rianiregho-web-uploads' > .env && chmod 600 .env
+```
+
 ---
 
-## 2. Deploy (first time and every update)
+## 2. First deploy (and the other ways to deploy)
 
 ### Option A — push to Git, pull on the server (recommended)
 
@@ -107,17 +180,17 @@ ssh -T git@github.com                        # should greet you
 **First time — clone, then add the secrets file** (it is not in Git):
 
 ```bash
-cd /var/www/rp/iregho-web
+cd /var/www/rp
 git clone https://github.com/rrrgho/rianiregho-web.git rianiregho-web   # public repo. Private: git@github.com:rrrgho/rianiregho-web.git
 cd rianiregho-web
 # create .env.production now — see step 1.4
 ./deploy/update.sh
 ```
 
-**Every update:** push from your machine, then on the server:
+**Every update:** see [Redeploy after you change the project](#redeploy-after-you-change-the-project):
 
 ```bash
-cd /var/www/rp/iregho-web/rianiregho-web && ./deploy/update.sh
+cd /var/www/rp/rianiregho-web && ./deploy/update.sh
 ```
 
 `update.sh` runs `git pull --ff-only`, rebuilds the image, restarts the container
@@ -134,7 +207,7 @@ SFTP) and does the same build and restart. It never uploads `.env*` or `storage/
 ### Or do it by hand
 
 ```bash
-cd /var/www/rp/iregho-web/rianiregho-web
+cd /var/www/rp/rianiregho-web
 git pull --ff-only
 docker compose build && docker compose up -d
 ```
@@ -220,7 +293,7 @@ sudo a2dissite riangho-web-api riangho-web-api-le-ssl
 sudo systemctl reload apache2
 ```
 
-Keep `/var/www/rp/iregho-web/rianiregho-web-api` for a few weeks as a safety net,
+Keep `/var/www/rp/rianiregho-web-api` for a few weeks as a safety net,
 then archive it. Do not leave both writing to the database.
 
 ---
@@ -232,7 +305,7 @@ then archive it. Do not leave both writing to the database.
 | Logs                         | `docker compose logs -f web`                                          |
 | Restart                      | `docker compose restart web`                                          |
 | Stop                         | `docker compose down`                                                 |
-| Rebuild after a code change  | `./deploy/update.sh` (after pushing to Git)                           |
+| Rebuild after a code change  | push to `main`, then `./deploy/update.sh` on the server               |
 | Change env vars              | edit `.env.production`, then `docker compose up -d`                   |
 | Shell inside the container   | `docker compose exec web sh`                                          |
 
@@ -269,7 +342,7 @@ Two things hold all the data: the database and the uploads folder.
 docker exec pgdb pg_dump -U postgres rianiregho_web | gzip > /var/backups/rianiregho_web_$(date +%F).sql.gz
 
 # Uploaded images
-rsync -a /var/www/rp/iregho-web/uploads/ /var/backups/rianiregho-uploads/
+rsync -a /var/www/rp/rianiregho-web-uploads/ /var/backups/rianiregho-uploads/
 ```
 
 Copy them off the server too. Restore: `gunzip -c dump.sql.gz | docker exec -i pgdb psql -U postgres rianiregho_web`.
@@ -313,7 +386,7 @@ Found while setting this up — none of it blocks the deployment, but please act
 | Login bounces back to `/login`                    | Apache is not sending `X-Forwarded-Proto` / `ProxyPreserveHost On`, so cookies get the wrong `Secure` flag. Use the provided vhost.                  |
 | Redirects to `0.0.0.0:3000`                       | The request bypassed Apache or `Host` was not forwarded. Use `ProxyPreserveHost On`.                                                                  |
 | Images are broken (404 on `/storage/...`)         | Uploads not copied (step 1.2) or the volume path in `docker-compose.yml` is wrong.                                                                   |
-| Upload fails with "permission denied"             | `chown -R 1001:1001 /var/www/rp/iregho-web/uploads`.                                                                                                |
+| Upload fails with "permission denied"             | `chown -R 1001:1001 /var/www/rp/rianiregho-web-uploads`.                                                                                                |
 | Upload fails with HTTP 413 / hangs                | A proxy limit. Apache: `LimitRequestBody 0` (in the vhost). Cloudflare free plan caps request bodies at 100 MB. The app itself allows 8 MB per photo. |
 | Build killed (`exit 137`)                         | Out of memory on the server. Add swap or build on your Mac and load the image.                                                                       |
 | Changed `.env.production` but nothing changed     | Run `docker compose up -d` (restart alone does not re-read the file).                                                                               |

@@ -51,7 +51,7 @@ export default function Home() {
         </Tooltip>
       </div> */}
 
-      <div className="relative mx-auto flex h-full max-w-7xl flex-col-reverse items-center justify-center gap-10 px-6 pt-20 lg:flex-row lg:justify-between lg:gap-16 lg:px-12">
+      <div className="relative mx-auto flex h-full max-w-7xl flex-col-reverse items-center justify-center gap-10 px-6 pt-20 pb-12 lg:flex-row lg:justify-between lg:gap-16 lg:px-12 lg:pb-0">
         {/* Copy */}
         <div className="flex w-full max-w-xl flex-col items-center text-center duration-700 animate-in fade-in slide-in-from-bottom-4 lg:items-start lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary lg:text-sm">

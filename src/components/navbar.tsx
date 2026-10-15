@@ -184,7 +184,7 @@ export function Navbar() {
         <div>
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <div
-              className={`md:hidden fixed z-40 top-5 left-0 right-0 px-5 flex flex-row items-center justify-between ${GLASS_BASE} ${
+              className={`md:hidden fixed z-40 top-0 left-0 right-0 px-5 pt-5 pb-3 flex flex-row items-center justify-between ${GLASS_BASE} ${
                 scrolled ? GLASS : ""
               }`}
             >

@@ -36,6 +36,6 @@ database. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full guide
 (server setup, Apache/HTTPS, DNS, backups, troubleshooting).
 
 ```bash
-# push to Git, then on the server:
-./deploy/update.sh   # git pull, build and restart
+# after pushing to main, on the server:
+cd /var/www/rp/rianiregho-web && ./deploy/update.sh   # git pull, build, restart
 ```

@@ -4,6 +4,8 @@ import Image, { type StaticImageData } from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const SWIPE_THRESHOLD = 100;
+// Drag distance at which the cards behind have fully moved up one place
+const PULL_DISTANCE = 220;
 const EXIT_MS = 280;
 // Cards behind the top one fan out to alternating sides so each layer peeks out
 const BEHIND = [
@@ -11,6 +13,8 @@ const BEHIND = [
   { x: 34, y: 10, rotate: 6, scale: 0.96 },
   { x: -34, y: 18, rotate: -6, scale: 0.92 },
 ];
+
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 type Props = {
   images: { src: StaticImageData; alt: string }[];
@@ -92,10 +96,25 @@ export function PhotoStack({ images }: Props) {
         {order.map((imgIndex, rank) => {
           const isTop = rank === 0;
           const depth = Math.min(rank, 2);
-          const transform = isTop
-            ? `translateX(${dx}px) rotate(${dx / 25}deg)`
-            : `translateX(${BEHIND[depth].x}px) translateY(${BEHIND[depth].y}px) rotate(${BEHIND[depth].rotate}deg) scale(${BEHIND[depth].scale})`;
-          const animate = !(isTop && dragging) && snapped !== imgIndex;
+          // 0 = at rest, 1 = top card fully swiped away. The cards behind are
+          // pulled forward in step with the finger.
+          const progress = Math.min(Math.abs(dx) / PULL_DISTANCE, 1);
+
+          let transform: string;
+          let brightness = 1;
+          let opacity = 1;
+          if (isTop) {
+            transform = `translateX(${dx}px) translateY(0px) rotate(${dx / 25}deg) scale(1)`;
+          } else {
+            const from = BEHIND[depth];
+            const to = BEHIND[Math.min(rank - 1, 2)];
+            transform = `translateX(${lerp(from.x, to.x, progress)}px) translateY(${lerp(from.y, to.y, progress)}px) rotate(${lerp(from.rotate, to.rotate, progress)}deg) scale(${lerp(from.scale, to.scale, progress)})`;
+            brightness = lerp(1 - depth * 0.2, 1 - Math.min(rank - 1, 2) * 0.2, progress);
+            // a 4th+ card fades in as it becomes visible
+            opacity = rank > 2 ? progress : 1;
+          }
+          // Follow the finger exactly while dragging; ease when released
+          const animate = !dragging && snapped !== imgIndex;
 
           return (
             <div
@@ -111,11 +130,11 @@ export function PhotoStack({ images }: Props) {
               style={{
                 transform,
                 zIndex: images.length - rank,
-                opacity: rank > 2 ? 0 : 1,
-                filter: isTop ? "none" : `brightness(${1 - depth * 0.2})`,
+                opacity,
+                filter: isTop ? "none" : `brightness(${brightness})`,
                 touchAction: "pan-y",
                 transition: animate
-                  ? `transform ${EXIT_MS}ms ease-out, filter ${EXIT_MS}ms`
+                  ? `transform ${EXIT_MS}ms ease-out, filter ${EXIT_MS}ms, opacity ${EXIT_MS}ms`
                   : "none",
               }}
             >
