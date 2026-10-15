@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local uploads
+/storage/
+
+# deployment template (contains no secrets)
+!deploy/env.production.example
+
+# credentials notes - never commit
+database_connection_info.txt

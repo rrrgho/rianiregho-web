@@ -15,7 +15,7 @@ const ProtectLoginRoute = ({ children }: { children: React.ReactNode }) => {
     if (session.status === "loading") return;
 
     if (session.status === "authenticated") {
-      // User is logged in with GitHub, redirect to admin
+      // User is logged in, redirect to admin
       router.replace("/administrator");
     } else {
       // User not authenticated, show login page

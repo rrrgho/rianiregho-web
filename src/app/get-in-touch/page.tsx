@@ -17,6 +17,7 @@ import { useCallback, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "sonner";
+import { AmbientGlow } from "@/components/ambient-glow";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const contactFormSchema = z.object({
@@ -77,6 +78,7 @@ export default function GetInTouchPage() {
 
   return (
     <div className="min-h-screen pt-20 px-5 lg:px-40 pb-10">
+      <AmbientGlow />
       <style jsx>{`
         @keyframes bounce-smooth {
           0%,
@@ -110,7 +112,7 @@ export default function GetInTouchPage() {
       <div className="grid md:grid-cols-2 gap-8">
         {/* CV Section */}
         <div className="flex flex-col gap-4 relative">
-          <Card className="h-full flex flex-col overflow-hidden relative">
+          <Card className="h-full flex flex-col overflow-hidden relative rounded-2xl border-primary/20 bg-card/70 backdrop-blur">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent pointer-events-none" />
             <CardHeader className="relative z-10">
               <CardTitle className="text-2xl">My Resume</CardTitle>
@@ -143,7 +145,7 @@ export default function GetInTouchPage() {
 
         {/* Contact Form Section */}
         <div>
-          <Card>
+          <Card className="rounded-2xl border-primary/20 bg-card/70 backdrop-blur">
             <CardHeader>
               <CardTitle>Get In Touch</CardTitle>
               <CardDescription>

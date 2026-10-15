@@ -1,7 +1,8 @@
 "use client";
 
 import { ErrorState } from "@/components/error-state";
-import PageHeader from "@/components/page-header";
+import { AmbientGlow } from "@/components/ambient-glow";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import PhotoShow from "@/components/photo-show";
 import { ProjectDetailSkeleton } from "@/components/project-detail-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,7 +10,7 @@ import { useProjectGaleries } from "@/hooks/queries/project-gallery.query";
 import { useProjectDetail } from "@/hooks/queries/project.query";
 import { renderHtmlContent } from "@/lib/html-parser";
 import { Project, ProjectGallery } from "@/types/project.types";
-import { Box, ExternalLink, Github, ImageOff } from "lucide-react";
+import { CalendarDays, ExternalLink, Github, ImageOff, UserRound } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -33,7 +34,6 @@ export default function ProjectDetailPage() {
   };
 
   const hidePhotoGalery = () => {
-    console.log("TRIGG");
     setShowPhotoInFullScreen(null);
   };
 
@@ -60,160 +60,133 @@ export default function ProjectDetailPage() {
 
   return (
     <div>
-      <PageHeader
-        visiting_page={projectData.name}
-        title={projectData.name}
-        description="See what amazing from this project story"
-      />
-      <div className="w-full max-w-[1920px] mx-auto min-h-screen px-5 lg:px-40">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            {/* Project Image */}
-            <div className="rounded-lg overflow-hidden bg-primary">
-              <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[600px]">
-                <Image
-                  src={
-                    process.env.NEXT_PUBLIC_STORAGE_URL + projectData.image_path
-                  }
-                  alt={projectData.title ?? "Project Thumbnail"}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            </div>
+      <AmbientGlow />
+      <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-40 pt-28 pb-16">
+        <Breadcrumbs visiting_page={projectData.name} />
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold text-primary py-10">
-              {projectData.name}
-            </h1>
-
-            {/* Long Description */}
-            <div className="mb-12 ">
-              {renderHtmlContent(projectData.description)}
-            </div>
-
-            {/* Project Info Grid */}
-            <div className="grid grid-cols-2 gap-8 mb-12">
-              <div>
-                <h3 className="font-semibold text-primary mb-2">
-                  Project Date
-                </h3>
-                <p className="text-muted-foreground">
-                  {moment(projectData.project_date).format("MMMM YYYY")}
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-primary mb-2">Role</h3>
-                <p className="text-muted-foreground">{projectData.role}</p>
-              </div>
-            </div>
-
-            {/* Links */}
-            {(projectData.github_link || projectData.project_link) && (
-              <div className="flex gap-4 mb-12">
-                {projectData.github_link && (
-                  <a
-                    href={projectData.github_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
-                  >
-                    <Github className="h-5 w-5" />
-                    View Code
-                  </a>
-                )}
-                {projectData.project_link && (
-                  <a
-                    href={projectData.project_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                    Live Demo
-                  </a>
-                )}
-              </div>
+        {/* Hero */}
+        <div className="mt-8 max-w-4xl">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1">
+              <CalendarDays size={14} />
+              {moment(projectData.project_date).format("MMMM YYYY")}
+            </span>
+            {projectData.role && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1">
+                <UserRound size={14} />
+                {projectData.role}
+              </span>
             )}
+          </div>
+          <h1 className="mt-5 text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.05]">
+            {projectData.name}
+          </h1>
+          {(projectData.github_link || projectData.project_link) && (
+            <div className="mt-6 flex flex-wrap gap-3">
+              {projectData.project_link && (
+                <a
+                  href={projectData.project_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:opacity-90"
+                >
+                  <ExternalLink className="h-5 w-5" />
+                  Live Demo
+                </a>
+              )}
+              {projectData.github_link && (
+                <a
+                  href={projectData.github_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 font-semibold transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+                >
+                  <Github className="h-5 w-5" />
+                  View Code
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Cover */}
+        <div className="relative mt-10 w-full overflow-hidden rounded-3xl border border-border bg-muted h-[260px] sm:h-[420px] lg:h-[620px]">
+          <Image
+            src={process.env.NEXT_PUBLIC_STORAGE_URL + projectData.image_path}
+            alt={projectData.name ?? "Project Thumbnail"}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+
+        <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-3">
+          {/* Story */}
+          <div className="lg:col-span-2">
+            <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-primary">
+              About this project
+            </h2>
+            {renderHtmlContent(projectData.description)}
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {/* Technologies */}
-            <div className="bg-card border border-border rounded-lg p-6  top-24">
-              <h3 className="font-semibold text-primary">Technologies</h3>
-              <span className="text-sm">
-                The tech stack that I use in building this project
-              </span>
-              <div className="flex flex-wrap gap-2 mt-4">
+          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="font-bold">Technologies</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                The tech stack used to build this project
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
                 {projectData.tech_stack.split(",").map((tech: string) => (
                   <span
                     key={tech}
-                    className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium"
+                    className="rounded-md bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
                   >
-                    {tech}
+                    {tech.trim()}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Project Galeries */}
-            <div className="bg-card border border-border rounded-lg p-6  top-24 mt-5">
-              <h3 className="font-semibold text-primary">Project Galery</h3>
-              <span className="text-sm">
-                Showing the moments how this project benefits my client
-              </span>
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="font-bold">Gallery</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Moments of how this project benefits the client
+              </p>
               {projectGalleryLoading && (
-                <div className="grid grid-cols-2 gap-1 mt-4">
-                  {new Array(2).fill("").map((item, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        className="group relative overflow-hidden h-[100px] rounded-lg"
-                      >
-                        <Skeleton className="bg-primary/40 h-[100px]" />
-                      </div>
-                    );
-                  })}
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {new Array(2).fill("").map((_, idx) => (
+                    <Skeleton key={idx} className="h-[100px] rounded-xl" />
+                  ))}
                 </div>
               )}
 
               {galleries?.length === 0 && (
-                <div className="w-full grid text-center grid-cols-1 justify-center items-center p-5">
-                  <div className="flex justify-center items-center">
-                    <ImageOff className="size-6" />
-                  </div>
-                  <span className="text-sm mt-3">No Galleries found</span>
+                <div className="grid justify-center p-5 text-center">
+                  <ImageOff className="mx-auto size-6" />
+                  <span className="mt-3 text-sm">No Galleries found</span>
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-1 mt-4">
-                {galleries?.map((item: ProjectGallery) => {
-                  return (
-                    <div
-                      key={item.id}
-                      className="group relative overflow-hidden h-[100px] rounded-lg"
-                      onClick={() => {
-                        showPhotoGalery(item.image_path);
-                      }}
-                    >
-                      <Image
-                        src={
-                          process.env.NEXT_PUBLIC_STORAGE_URL + item.image_path
-                        }
-                        alt={"Galleries" + item.id}
-                        fill
-                        className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105 "
-                      />
-                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300 cursor-pointer"></div>
-                    </div>
-                  );
-                })}
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                {galleries?.map((item: ProjectGallery) => (
+                  <div
+                    key={item.id}
+                    className="group relative h-[100px] cursor-pointer overflow-hidden rounded-xl"
+                    onClick={() => showPhotoGalery(item.image_path)}
+                  >
+                    <Image
+                      src={process.env.NEXT_PUBLIC_STORAGE_URL + item.image_path}
+                      alt={"Galleries" + item.id}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-40" />
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          </aside>
         </div>
       </div>
 

@@ -15,7 +15,7 @@ const ProtectAdminRoutes = ({ children }: { children: React.ReactNode }) => {
     if (session.status === "loading") return;
 
     if (session.status === "authenticated") {
-      // User is logged in with GitHub
+      // User is logged in
       // Middleware already protected this route, so we're good
       setIsReady(true);
     } else {

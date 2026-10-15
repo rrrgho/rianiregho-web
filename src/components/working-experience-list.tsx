@@ -34,7 +34,7 @@ const WorkingExperienceList = ({
           }
         }
         return (
-          <Link href={`/working-experience/${item.id}`}>
+          <Link key={item.id} href={`/working-experience/${item.id}`}>
             <div className="text-sm leading-none font-medium flex flex-nowrap items-center py-2 px-4 rounded cursor-pointer hover:bg-primary/30">
               <div className="h-[30px] w-[35px] relative">
                 <Image

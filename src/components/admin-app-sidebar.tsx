@@ -5,6 +5,7 @@ import {
   Calendar,
   EllipsisVertical,
   Home,
+  Images,
   Inbox,
   LogOut,
   Search,
@@ -58,6 +59,11 @@ const items = [
     url: "/administrator/working-experience",
     icon: BriefcaseBusiness,
   },
+  {
+    title: "Gallery",
+    url: "/administrator/gallery",
+    icon: Images,
+  },
 ];
 
 const AdminAppSidebar = ({ children }: IAdminAppSidebar) => {
@@ -73,8 +79,8 @@ const AdminAppSidebar = ({ children }: IAdminAppSidebar) => {
             </div>
             <SidebarGroupLabel>
               <span className="text-xs">
-                Manage website content like showing projects, work experience
-                and blog
+                Manage website content like showing projects, work experience,
+                gallery and blog
               </span>
             </SidebarGroupLabel>
 

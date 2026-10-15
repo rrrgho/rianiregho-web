@@ -11,7 +11,7 @@ import { signOut } from "next-auth/react";
  * Create axios instance with base configuration
  */
 const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -68,7 +68,7 @@ apiClient.interceptors.response.use(
         // Logout from NextAuth and redirect to login
         toast.error("Session expired. Please login again.");
 
-        // Sign out from GitHub/NextAuth and redirect
+        // Sign out from NextAuth and redirect
         signOut({
           redirect: true,
           callbackUrl: "/login",

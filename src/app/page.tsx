@@ -1,26 +1,46 @@
 "use client";
 
-import MainChar from "@/assets/images/main-char.jpg";
 import nextjsicon from "@/assets/images/nextjslogo.png";
+import slide1 from "@/assets/images/slide1.jpg";
+import slide2 from "@/assets/images/slide2.jpg";
+import slide3 from "@/assets/images/slide3.jpg";
+import { PhotoStack } from "@/components/photo-stack";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useDynamicHeight } from "@/hooks/use-dynamic-height";
-import { GithubIcon, Link as IconLink, Video, X } from "lucide-react";
+import { ArrowUpRight, Building2, GithubIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+
+const SLIDES = [
+  { src: slide1, alt: "Rian Iregho" },
+  { src: slide2, alt: "Rian Iregho" },
+  { src: slide3, alt: "Rian Iregho" },
+];
+
+const STATS = [
+  { value: "Telkomsel", label: "Frontend Lead Engineer" },
+  { value: "Doiscode", label: "CEO" },
+  { value: "8+", label: "Years of Experience" },
+];
 
 export default function Home() {
-  const isTall = useDynamicHeight();
-  const [showVideo, setShowVideo] = useState(false);
-
   return (
-    <div className={`relative max-w-[1920px] mx-auto ${isTall ? "h-screen" : "h-[700px]"}`}>
-      <div className="fixed w-[25px] h-[25px] bottom-5 right-5 z-95 rounded-full overflow-hidden">
+    <div className="relative min-h-[700px] h-screen max-w-[1920px] mx-auto overflow-hidden">
+      {/* Ambient glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-primary/20 blur-[120px]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-40 right-0 h-[400px] w-[400px] rounded-full bg-primary/10 blur-[120px]"
+      />
+
+      {/* <div className="fixed bottom-5 right-5 z-95 h-[25px] w-[25px] overflow-hidden rounded-full">
         <Tooltip>
           <TooltipTrigger>
             <Image src={nextjsicon} alt="nextjs" width={25} height={25} />
@@ -29,122 +49,87 @@ export default function Home() {
             This website is built with Next JS & ShadCN
           </TooltipContent>
         </Tooltip>
-      </div>
-      <div className="flex flex-nowrap h-full">
-        <div className="hidden sm:block xl:hidden w-full h-full absolute top-0 left-0">
-          <div>
-            <Image src={MainChar} fill alt="Rian Iregho" />
-          </div>
-          <div
-            className="absolute top-0 left-0 w-full h-full"
-            style={{ background: "#111111", opacity: 0.6 }}
-          ></div>
-        </div>
+      </div> */}
 
-        <div
-          id="background"
-          className="absolute xl:relative flex xl:w-[55%] h-full 2xl:w-[63%] items-center px-5 lg:px-40"
-        >
-          <div className="">
-            <div className="flex mb-5 ms-[-5px] flex-nowrap gap-2 block sm:hidden">
-              <div className="w-[100px] h-[100px] rounded-full bg-primary overflow-hidden">
-                <Image
-                  src={MainChar}
-                  className="mt-[-20px]"
-                  alt="Rian Iregho"
-                />
-              </div>
-            </div>
-            <span className="text-2xl lg:text-3xl text-primary text-primary font-bold">
-              Software Engineer,
-            </span>{" "}
-            <br />
-            <div className="leading-none">
-              {/* <span className="text-[110px] font-extrabold">RIAN</span> <br /> */}
-              <span className="text-[60px] lg:text-[80px] 2xl:text-[110px] font-extrabold ms-[-5px]">
-                Rian Iregho
-              </span>
-            </div>
-            <div className="w-[400px] lg:w-[500px] mt-5">
-              <span className="text-foreground/70">
-                5+ years of experience building innovative, scalable, and
-                user-focused applications.
-              </span>
-            </div>
-            <div className="w-full mt-4">
-              <Link href="/get-in-touch">
-                <Button className="p-5 md:p-7">
-                  <IconLink />
-                  <span className="text-sm lg:text-lg cursor-pointer">
-                    Get in touch
-                  </span>
-                </Button>
-              </Link>
-            </div>
-            <div className="w-[400px] lg:w-[500px] mt-5 flex flex-nowrap">
-              <GithubIcon size={20} />
-              <span className="text-foreground/70 text-xs mt-1 ms-2">
-                Want to fork this website?
-                <Link className="ms-1 underline decoration-1" href="/docs">
-                  See documentation
-                </Link>
-              </span>
-            </div>
-            <div className="w-[400px] absolute bottom-5 lg:w-[500px] mt-5 flex flex-nowrap">
-              <span className="text-foreground/70 text-xs mt-1 ms-2">
-                Powered by
-                <a
-                  href="https://nextjs.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ms-1 underline decoration-solid"
-                >
-                  Next.JS
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
+      <div className="relative mx-auto flex h-full max-w-7xl flex-col-reverse items-center justify-center gap-10 px-6 pt-20 lg:flex-row lg:justify-between lg:gap-16 lg:px-12">
+        {/* Copy */}
+        <div className="flex w-full max-w-xl flex-col items-center text-center duration-700 animate-in fade-in slide-in-from-bottom-4 lg:items-start lg:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary lg:text-sm">
+            {/* <span className="h-1.5 w-1.5 rounded-full bg-primary" /> */}
+            Software Engineer <span className="h-1.5 mt-[2px] w-1.5 rounded-full bg-primary" /> Founder of Doiscode
+          </span>
 
-        <div className="flex xl:w-[45%] 2xl:w-[37%] relative bg-primary items-end ">
-          <div>
-            <Image src={MainChar} fill className="" alt="Rian Iregho" />
-          </div>
-          <div
-            className="absolute top-0 left-0 w-full h-full"
-            style={{ background: "#111111", opacity: 0.6 }}
-          ></div>
-        </div>
-      </div>
+          <h1 className="mt-5 text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl 2xl:text-7xl">
+            Rian{" "}
+            <span className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
+              Iregho
+            </span>
+          </h1>
 
-      {/* Video Modal Overlay */}
-      {showVideo && (
-        <div className="fixed inset-0 z-95 bg-black/80 flex items-center justify-center p-4">
-          <div className="w-full max-w-4xl">
-            <div className="flex justify-end mb-4">
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => setShowVideo(false)}
-                className="text-white hover:bg-white/20"
-              >
-                <X className="h-6 w-6" />
+          <p className="mt-5 max-w-md text-base text-foreground/70 lg:text-lg">
+            8+ Years in Software Engineering, Leading Doiscode Technology Focused on the Oil Palm & Agriculture Industry.
+          </p>
+
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+            <Link href="/get-in-touch">
+              <Button size="lg" className="group h-12 cursor-pointer px-6">
+                Get in touch
+                <ArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Button>
-            </div>
-            <div
-              className="relative w-full bg-black rounded-lg overflow-hidden"
-              style={{ paddingBottom: "62.5%" }}
-            >
-              <iframe
-                src="https://www.loom.com/embed/ad9a9e31f899482d9b17c1aa0454fe47"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              />
-            </div>
+            </Link>
+            <Link href="/projects">
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-12 cursor-pointer px-6"
+              >
+                View projects
+              </Button>
+            </Link>
           </div>
+
+          <dl className="mt-10 grid w-full grid-cols-3 gap-4 border-t border-foreground/10 pt-6">
+            {STATS.map((s) => (
+              <div key={s.label}>
+                <dt className="text-lg font-bold lg:text-xl">{s.value}</dt>
+                <dd className="text-xs text-foreground/60">{s.label}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {/* <div className="mt-8 flex items-center gap-2 text-xs text-foreground/60">
+            <GithubIcon size={16} />
+            <span>
+              Want to fork this website?
+              <Link className="ms-1 underline decoration-1" href="/docs">
+                See documentation
+              </Link>
+            </span>
+          </div> */}
         </div>
-      )}
+
+        {/* Portrait */}
+        <div className="relative w-full max-w-[260px] duration-700 animate-in fade-in zoom-in-95 sm:max-w-[320px] lg:max-w-[420px] 2xl:max-w-[500px] mt-10 lg:mt-0">
+          <div
+            aria-hidden
+            className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-primary/40 to-transparent blur-xl"
+          />
+          <PhotoStack images={SLIDES} />
+        </div>
+      </div>
+
+      {/* <div className="absolute bottom-5 left-0 w-full text-center text-xs text-foreground/50">
+        Powered by
+        <a
+          href="https://nextjs.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ms-1 underline decoration-solid"
+        >
+          Next.JS
+        </a>
+      </div> */}
     </div>
   );
 }

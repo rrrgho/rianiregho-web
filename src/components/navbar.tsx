@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Facebook,
   Home,
+  Images,
   Instagram,
   Linkedin,
   Menu,
@@ -45,6 +46,15 @@ import { Fragment, useEffect, useState } from "react";
 import { Collapsible, CollapsibleTrigger } from "./ui/collapsible";
 import WorkingExperienceNavList from "./working-experience-nav-list";
 import WorkingExperienceNavMobileList from "./working-experience-nav-mobile-list";
+
+// Apple "Liquid Glass"-style surface: translucent, heavily blurred and
+// saturated backdrop, a bright rim and an inner highlight. Only colours,
+// blur and shadow change on scroll, never the navbar's size or position.
+const GLASS_BASE =
+  "border border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ease-out";
+
+const GLASS =
+  "border-white/30 dark:border-white/15 bg-white/30 dark:bg-white/[0.07] backdrop-blur-2xl backdrop-saturate-[180%] shadow-[0_8px_32px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.45),inset_0_-1px_0_rgba(255,255,255,0.08)]";
 
 const SocialMedia = ({ isMobile }: { isMobile: boolean }) => {
   return (
@@ -88,21 +98,33 @@ export function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const isAdminPage = useDetectPathname({ pathname: "administrator" });
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {}, [isAdminPage]);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   if (isAdminPage) return;
 
   if (mounted) {
     return (
       <Fragment>
-        <div className="w-full fixed top-0 z-40">
-          <div className="max-w-[1920px] mx-auto flex flex-row justify-center md:justify-between px-5 lg:px-40 py-4 md:py-5">
+        <div
+          className="w-full fixed top-0 z-40 hidden md:block"
+        >
+          <div
+            className={`mx-auto flex flex-row justify-center md:justify-between max-w-[1920px] px-5 lg:px-40 py-4 md:py-5 ${GLASS_BASE} ${
+              scrolled ? GLASS : ""
+            }`}
+          >
           <SocialMedia isMobile={isMobile} />
           <NavigationMenu className="w-full" viewport={isMobile}>
             <NavigationMenuList className="w-full flex-wrap">
@@ -131,9 +153,17 @@ export function Navbar() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <div className="animate-bounce">
-                  <NavigationMenuTrigger className="bg-primary/50 font-bold text-white hover:bg-primary/20">
-                    ✨ My Career
+                <NavigationMenuLink
+                  asChild
+                  className={navigationMenuTriggerStyle()}
+                >
+                  <Link href="/gallery">Gallery</Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <div className="animate-bounce-disable">
+                  <NavigationMenuTrigger className="bg-primary/50 font-bold text-foreground hover:bg-primary/20">
+                    Career Journey
                   </NavigationMenuTrigger>
                 </div>
                 <WorkingExperienceNavList />
@@ -153,7 +183,11 @@ export function Navbar() {
 
         <div>
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-            <div className="md:hidden px-5 fixed top-5 z-40 w-full flex flex-row justify-between ">
+            <div
+              className={`md:hidden fixed z-40 top-5 left-0 right-0 px-5 flex flex-row items-center justify-between ${GLASS_BASE} ${
+                scrolled ? GLASS : ""
+              }`}
+            >
               <DrawerTrigger asChild>
                 <Button variant="outline">
                   <Menu />
@@ -215,6 +249,14 @@ export function Navbar() {
                       <Briefcase />
                     </div>
                     <div className="ms-3">Projects</div>
+                  </div>
+                </Link>
+                <Link href="/gallery" onClick={() => setDrawerOpen(false)}>
+                  <div className="flex flex-row m-2 p-2">
+                    <div>
+                      <Images />
+                    </div>
+                    <div className="ms-3">Gallery</div>
                   </div>
                 </Link>
                 <DrawerFooter></DrawerFooter>

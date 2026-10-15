@@ -1,5 +1,6 @@
 "use client";
 
+import { useActionState } from "react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +12,16 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { login } from "@/lib/actions/auth";
-import { AlertCircleIcon, Github } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
+import { login, type LoginState } from "@/lib/actions/auth";
+import { AlertCircleIcon } from "lucide-react";
 
 export default function LoginPage() {
+  const [state, formAction, pending] = useActionState<LoginState, FormData>(
+    login,
+    {}
+  );
+
   return (
     <div className="flex">
       <div className="w-full h-screen  flex justify-center items-center">
@@ -28,44 +34,45 @@ export default function LoginPage() {
               <CardDescription>
                 Login to manage the website content !
               </CardDescription>
-              <Alert variant="default">
-                <AlertCircleIcon color="orange" />
-                <AlertTitle className="text-primary">
-                  Login with email is temporary disabled !
-                </AlertTitle>
-              </Alert>
+              {state.error && (
+                <Alert variant="destructive">
+                  <AlertCircleIcon />
+                  <AlertTitle>{state.error}</AlertTitle>
+                </Alert>
+              )}
             </CardHeader>
-            <CardContent className="flex flex-col gap-6">
-              <Field>
-                <FieldLabel htmlFor="Email">Email</FieldLabel>
-                <Input placeholder="rian@iregho.com" disabled />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
-                <Input placeholder="Your password" disabled />
-              </Field>
-
-              <div>
-                <Button disabled className="w-full cursor-pointer">
-                  <span>Login</span>
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-3 flex justify-center items-center">
-                <Separator />
-                <div className="text-center">Login with</div>
-                <Separator />
-              </div>
-
-              <div>
+            <CardContent>
+              <form action={formAction} className="flex flex-col gap-6">
+                <Field>
+                  <FieldLabel htmlFor="email">Email</FieldLabel>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="username"
+                    placeholder="rian@iregho.com"
+                    required
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    placeholder="Your password"
+                    required
+                  />
+                </Field>
                 <Button
-                  onClick={() => login()}
-                  className="w-full cursor-pointer bg-background"
+                  type="submit"
+                  disabled={pending}
+                  className="w-full cursor-pointer"
                 >
-                  <Github className="text-primary" />
-                  <span className="text-primary">Github</span>
+                  {pending ? <Spinner /> : <span>Login</span>}
                 </Button>
-              </div>
+              </form>
             </CardContent>
           </Card>
         </div>

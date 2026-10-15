@@ -1,0 +1,23 @@
+node_modules
+.next
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+npm-debug.log*
+
+# secrets & local-only data: never bake into the image
+.env
+.env.*
+database_connection_info.txt
+storage
+*.sql.gz
+
+# not needed to build
+docs
+deploy
+README.md
+Dockerfile
+docker-compose.yml
+.dockerignore

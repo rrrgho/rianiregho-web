@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 
 /**
  * OAuth User mutation
- * Sends GitHub email to backend to validate/create user and get bearer token
+ * Exchanges the signed-in session to validate/create user and get bearer token
  */
 
 async function validateUser(email: string): Promise<ApiTokenRequestResponse> {

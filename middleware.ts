@@ -1,10 +1,13 @@
-import { auth } from "@/auth";
+import NextAuth from "next-auth";
+import authConfig from "@/auth.config";
 import { type NextRequest, NextResponse } from "next/server";
 
 /**
  * Main middleware for authentication
  * Uses NextAuth's auth to protect routes
  */
+const { auth } = NextAuth(authConfig);
+
 export default auth((req) => {
   const { pathname } = req.nextUrl;
 
@@ -28,7 +31,7 @@ export default auth((req) => {
     // Check for bearer token
     const bearerToken = req.cookies.get("bearerToken")?.value;
     if (!bearerToken) {
-      // Token not present, but user is logged in with GitHub
+      // Token not present, but user is logged in
       // This will be validated client-side or through API
       return NextResponse.next();
     }

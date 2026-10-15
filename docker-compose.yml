@@ -1,0 +1,36 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_URL: /api
+        NEXT_PUBLIC_STORAGE_URL: /storage/
+    image: rianiregho-web:latest
+    container_name: rianiregho-web
+    restart: unless-stopped
+
+    # Runtime secrets/config (DATABASE_URL, AUTH_SECRET, ...). Never committed.
+    env_file: .env.production
+
+    # Only reachable from the server itself; Apache proxies the public domain here.
+    ports:
+      - "127.0.0.1:8021:3000"
+
+    # Lets the container reach Postgres (published on the host's port 5432)
+    # as host.docker.internal.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    # Uploaded images live on the host so they survive rebuilds.
+    # Must be writable by uid 1001 (see docs/DEPLOYMENT.md).
+    volumes:
+      - ${UPLOADS_HOST_DIR:-/var/www/rp/iregho-web/uploads}:/data/uploads
+
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 768m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"

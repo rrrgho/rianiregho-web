@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Self-contained server bundle for the Docker image.
+  output: "standalone",
   images: {
     unoptimized: process.env.NODE_ENV === "development",
     domains: [

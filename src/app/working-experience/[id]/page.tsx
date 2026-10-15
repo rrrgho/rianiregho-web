@@ -1,17 +1,15 @@
 "use client";
 
 import { ErrorState } from "@/components/error-state";
-import PageHeader from "@/components/page-header";
+import { AmbientGlow } from "@/components/ambient-glow";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ProjectDetailSkeleton } from "@/components/project-detail-skeleton";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-} from "@/components/ui/navigation-menu";
 import WorkingExperienceList from "@/components/working-experience-list";
 import { useWorkingExperienceDetail } from "@/hooks/queries/working-experience.query";
 import { renderHtmlContent } from "@/lib/html-parser";
 import { WorkingExperience } from "@/types/working-experience.types";
-import { AlertCircle } from "lucide-react";
+import { ArrowUpRight, CalendarDays, MapPin } from "lucide-react";
+import Link from "next/link";
 import moment from "moment";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -45,75 +43,92 @@ export default function ProjectDetailPage() {
     );
   }
 
+  const imageUrl = (path?: string | File) =>
+    process.env.NEXT_PUBLIC_STORAGE_URL + (path as string);
+
   return (
     <div>
-      <PageHeader
-        visiting_page={detail?.title}
-        title={detail?.title}
-        description="See what amazing from this working experience"
-      />
-      <div className="w-full max-w-[1920px] mx-auto min-h-screen px-5 lg:px-40">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            {/* Project Image */}
-            <div className="rounded-lg overflow-hidden bg-primary">
-              <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[600px]">
-                <Image
-                  src={process.env.NEXT_PUBLIC_STORAGE_URL + detail?.banner}
-                  alt={detail.title ?? "Project Thumbnail"}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            </div>
+      <AmbientGlow />
+      <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-40 pt-28 pb-16">
+        <Breadcrumbs visiting_page={detail.title} />
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold text-primary pt-10">
+        {/* Hero */}
+        <div className="mt-8 flex items-start gap-5">
+          {detail.icon && (
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-border bg-card md:h-20 md:w-20">
+              <Image
+                src={imageUrl(detail.icon)}
+                alt={detail.title ?? "Company"}
+                fill
+                className="object-cover"
+              />
+            </div>
+          )}
+          <div>
+            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1">
+                <CalendarDays size={14} />
+                {moment(detail.start_date).format("MMM YYYY")} -{" "}
+                {detail.end_date
+                  ? moment(detail.end_date).format("MMM YYYY")
+                  : "Present"}
+              </span>
+              {detail.location && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1">
+                  <MapPin size={14} />
+                  {detail.location}
+                </span>
+              )}
+            </div>
+            <h1 className="mt-4 text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.05]">
               {detail.title}
             </h1>
-            <h2 className="text-md md:text-xl text-primary mt-2">
-              {moment(detail.start_date).format("MMMM, YYYY")} -{" "}
-              {detail.end_date
-                ? moment(detail.end_date).format("MMMM, YYYY")
-                : "Present"}
-            </h2>
+            {detail.subtitle && (
+              <p className="mt-3 text-lg text-muted-foreground">
+                {detail.subtitle}
+              </p>
+            )}
+          </div>
+        </div>
 
-            {/* Long Description */}
-            <div className="mb-12 mt-10 ">
-              {renderHtmlContent(detail.description)}
-            </div>
+        {/* Banner */}
+        {detail.banner && (
+          <div className="relative mt-10 w-full overflow-hidden rounded-3xl border border-border bg-muted h-[240px] sm:h-[380px] lg:h-[520px]">
+            <Image
+              src={imageUrl(detail.banner)}
+              alt={detail.title ?? "Banner"}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
+
+        <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-primary">
+              What I did here
+            </h2>
+            {renderHtmlContent(detail.description)}
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {/* Another Working Experiences */}
-            <div className="bg-card border border-border rounded-lg p-6  top-24">
-              <h3 className="font-semibold text-primary">
-                Working experiences
-              </h3>
-              <span className="text-sm">Checkout this amazing experiences</span>
-              <div className="flex flex-wrap grid grid-cols-1 gap-2 mt-4">
+          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="font-bold">Other experiences</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                More of my career journey
+              </p>
+              <div className="mt-4">
                 <WorkingExperienceList hide_specific_list_by_id={id} />
               </div>
+              <Link
+                href="/working-experience"
+                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary"
+              >
+                View all <ArrowUpRight size={14} />
+              </Link>
             </div>
-
-            {/* Galleries */}
-            <div className="bg-card border border-border rounded-lg p-6 top-24 mt-10">
-              <h3 className="font-semibold text-primary">Gallery</h3>
-              <span className="text-sm">See how amazing working here</span>
-              <div className="flex flex-wrap grid grid-cols-1 gap-2 mt-4 py-10">
-                <div className="w-full flex justify-center items-center">
-                  <AlertCircle />
-                </div>
-                <span className="text-xs text-primary text-center">
-                  Gallery for working experience is still under development, see
-                  PROJECTS to see the gallery !
-                </span>
-              </div>
-            </div>
-          </div>
+          </aside>
         </div>
       </div>
     </div>

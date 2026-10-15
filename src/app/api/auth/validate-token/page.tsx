@@ -1,13 +1,12 @@
 "use client";
 import { Spinner } from "@/components/ui/spinner";
 import { useOAuthUser } from "@/hooks/queries/auth.query";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function ValidateToken() {
   const router = useRouter();
-  const session = useSession();
+  const started = useRef(false);
   const validateUser = useOAuthUser({
     onSuccess: (data) => {
       // Store bearer token in sessionStorage for use in API client
@@ -32,11 +31,14 @@ export default function ValidateToken() {
     },
   });
 
+  // The server reads the session cookie itself, so don't wait on the client
+  // session: after a soft navigation from /login it is still stale.
   useEffect(() => {
-    if (session.status === "authenticated" && session.data?.user?.email) {
-      validateUser.mutate(session.data.user.email);
-    }
-  }, [session.status, session.data?.user?.email]);
+    if (started.current) return;
+    started.current = true;
+    validateUser.mutate("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex w-full h-screen justify-center items-center ">
